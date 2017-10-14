@@ -1,8 +1,7 @@
+/packages/*/lib/
 .idea/
 .vscode/
 node_modules/
-packages/*/build/
-packages/*/lib/
 .DS_Store
 Thumbs.db
 *.sublime-project

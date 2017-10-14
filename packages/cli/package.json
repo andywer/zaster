@@ -1,0 +1,21 @@
+{
+  "name": "@wallet/cli",
+  "version": "0.1.0",
+  "description": "Digital payment, as simple as Git.",
+  "license": "MIT",
+  "author": "Andy Wermke (https://github.com/andywer)",
+  "bin": {
+    "wallet": "lib/bin/wallet.js"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "scripts": {
+    "build": "babel --out-dir lib/ src/",
+    "test": "standard src/**/*.js"
+  },
+  "dependencies": {
+    "chalk": "^2.1.0",
+    "commander": "^2.11.0"
+  }
+}
