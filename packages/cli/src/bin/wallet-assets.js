@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import program from 'commander'
 import pkg from '../../package.json'
+import { init as initImplementations } from '../implementations'
 
 program
   .name('wallet')
@@ -12,7 +13,7 @@ program
 printAvailableAssets()
 
 function printAvailableAssets () {
-  const assets = []
+  const { assets } = initImplementations()
 
   console.log('Supported assets:')
 

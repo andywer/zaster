@@ -13,11 +13,14 @@
   "scripts": {
     "build": "babel --out-dir lib/ src/",
     "pretest": "standard src/**/*.js",
-    "test": "ava"
+    "test": "ava",
+    "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
+    "@wallet/stellar": "^0.1.0",
     "chalk": "^2.1.0",
-    "commander": "^2.11.0"
+    "commander": "^2.11.0",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "execa": "^0.8.0",
