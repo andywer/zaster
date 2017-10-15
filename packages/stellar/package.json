@@ -1,0 +1,13 @@
+{
+  "name": "@wallet/stellar",
+  "version": "0.1.0",
+  "description": "Stellar network SDK, compatible with the CLI wallet API.",
+  "license": "MIT",
+  "author": "Andy Wermke (https://github.com/andywer)",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel --out-dir lib/ src/",
+    "test": "standard src/**/*.js",
+    "prepublishOnly": "npm run build && npm test"
+  }
+}
