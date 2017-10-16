@@ -1,0 +1,20 @@
+{
+  "name": "@wallet/key-store",
+  "version": "0.1.0",
+  "description": "Encrypted wallet storage.",
+  "license": "MIT",
+  "author": "Andy Wermke (https://github.com/andywer)",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel --out-dir lib/ src/",
+    "pretest": "standard src/**/*.js",
+    "test": "ava",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "ava": {
+    "require": ["babel-register"]
+  },
+  "dependencies": {
+    "mz": "^2.7.0"
+  }
+}
