@@ -1,7 +1,8 @@
 import test from 'ava'
+import fs from 'mz/fs'
 import path from 'path'
 import temp from 'temp'
-import { createStore, loadStore, storeExists } from '../src'
+import { createStore, loadStore, loadOrCreateStore, storeExists } from '../src'
 
 temp.track()
 
@@ -29,5 +30,20 @@ test('loadStore() can open an existing store', async t => {
   t.deepEqual(await store.getWalletIDs(), [])
 })
 
-test.todo('loadOrCreateStore() can create a store')
-test.todo('loadOrCreateStore() can open an existing store')
+test('loadOrCreateStore() can create a store', async t => {
+  const filePath = temp.path()
+  const store = await loadOrCreateStore(filePath)
+
+  t.is(typeof store, 'object')
+  t.is(typeof store.getWalletIDs, 'function')
+  t.deepEqual(await store.getWalletIDs(), [])
+  t.true((await fs.stat(filePath)).isFile())
+})
+
+test('loadOrCreateStore() can open an existing store', async t => {
+  const store = await loadOrCreateStore(path.join(fixturesDirPath, 'sample-store'))
+
+  t.is(typeof store, 'object')
+  t.is(typeof store.getWalletIDs, 'function')
+  t.deepEqual(await store.getWalletIDs(), [])
+})

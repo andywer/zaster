@@ -26,8 +26,17 @@ async function loadStoreFile (filePath) {
   return createStore({ saveFile: save(filePath), wallets })
 }
 
+async function loadOrCreateStoreFile (filePath) {
+  if (await storeFileExists(filePath)) {
+    return loadStoreFile(filePath)
+  } else {
+    return createStoreFile(filePath)
+  }
+}
+
 export {
   createStoreFile as createStore,
   loadStoreFile as loadStore,
+  loadOrCreateStoreFile as loadOrCreateStore,
   storeFileExists as storeExists
 }
