@@ -2,7 +2,7 @@ import fs from 'mz/fs'
 import { createStore } from './store'
 
 const save = filePath => async fileContent => {
-  await fs.writeFile(filePath, fileContent, { encoding: 'utf-8', flag: 'wx' })
+  await fs.writeFile(filePath, fileContent, { encoding: 'utf-8' })
 }
 
 async function storeFileExists (filePath) {
