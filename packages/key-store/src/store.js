@@ -1,10 +1,10 @@
-export function createStore ({ saveToDisk, wallets = {} }) {
+export function createStore ({ saveFile, wallets = {} }) {
   return {
     getWalletIDs () {
       return Object.keys(wallets)
     },
     async save () {
-      await saveToDisk(stringifyStore({ wallets }))
+      await saveFile(stringifyStore({ wallets }))
     }
   }
 }

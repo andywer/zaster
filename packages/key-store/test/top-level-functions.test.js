@@ -1,7 +1,7 @@
 import test from 'ava'
 import path from 'path'
 import temp from 'temp'
-import { createStore, storeExists } from '../src'
+import { createStore, loadStore, storeExists } from '../src'
 
 temp.track()
 
@@ -21,6 +21,13 @@ test('createStore() can create a store', async t => {
   t.deepEqual(await store.getWalletIDs(), [])
 })
 
-test.todo('loadStore() can open an existing store')
+test('loadStore() can open an existing store', async t => {
+  const store = await loadStore(path.join(fixturesDirPath, 'sample-store'))
+
+  t.is(typeof store, 'object')
+  t.is(typeof store.getWalletIDs, 'function')
+  t.deepEqual(await store.getWalletIDs(), [])
+})
+
 test.todo('loadOrCreateStore() can create a store')
 test.todo('loadOrCreateStore() can open an existing store')
