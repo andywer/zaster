@@ -12,9 +12,14 @@
     "prepublishOnly": "npm run build && npm test"
   },
   "ava": {
-    "require": ["babel-register"]
+    "require": [
+      "babel-register"
+    ]
   },
   "dependencies": {
     "mz": "^2.7.0"
+  },
+  "devDependencies": {
+    "temp": "^0.8.3"
   }
 }
