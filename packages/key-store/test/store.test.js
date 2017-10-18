@@ -44,4 +44,16 @@ test('store.saveWallet() can update an existing wallet', async t => {
   t.deepEqual(reloadedStore.readWallet('walletID', 'newPassword'), { privateKey: 'newPrivateKey' })
 })
 
-test.todo('store.removeWallet() can delete a wallet from the store')
+test('store.removeWallet() can delete a wallet from the store', async t => {
+  const filePath = temp.path()
+  const store = await createStore(filePath)
+
+  await store.saveWallet('walletID', 'somePassword', { privateKey: 'secretPrivateKey' })
+  t.deepEqual(store.getWalletIDs(), ['walletID'])
+
+  await store.removeWallet('walletID')
+  t.deepEqual(store.getWalletIDs(), [])
+
+  const reloadedStore = await loadStore(filePath)
+  t.deepEqual(reloadedStore.getWalletIDs(), [])
+})

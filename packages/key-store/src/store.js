@@ -17,6 +17,13 @@ export function createStore ({ saveFile, wallets = {} }) {
     readWallet (walletId, password) {
       const { data, salt } = wallets[walletId]
       return JSON.parse(decryptWalletData(data, password, salt))
+    },
+    async removeWallet (walletId) {
+      if (!(walletId in wallets)) {
+        throw new Error(`Wallet ${walletId} not found in store.`)
+      }
+      delete wallets[walletId]
+      await saveFile(stringifyStore({ wallets }))
     }
   }
 }
