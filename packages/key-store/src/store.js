@@ -36,7 +36,7 @@ function decryptWalletData (base64Data, password, salt) {
 }
 
 function deriveKeyFromPassword (password, salt) {
-  return pbkdf2Sync(password, Buffer.from(salt, 'hex'), 100000, 256, 'sha256').toString('base64')
+  return pbkdf2Sync(password, Buffer.from(salt, 'hex'), 20000, 256, 'sha256').toString('base64')
 }
 
 async function createRandomBuffer (sizeInBytes) {
