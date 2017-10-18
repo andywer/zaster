@@ -6,6 +6,10 @@ import { createStore, loadStore } from '../src'
 
 temp.track()
 
+test.todo('store.getWalletIDs() returns all wallet IDs')
+test.todo('store.readWallet() can decrypt and decode a wallet')
+test.todo('store.readWallet() throws proper error on wrong password')
+
 test('store.saveWallet() can save a new wallet', async t => {
   const filePath = temp.path()
   const store = await createStore(filePath)
@@ -21,8 +25,23 @@ test('store.saveWallet() can save a new wallet', async t => {
   t.deepEqual(reloadedStore.readWallet('walletID', 'somePassword'), { privateKey: 'secretPrivateKey' })
 })
 
-test.todo('store.saveWallet() can update an existing wallet')
-test.todo('store.getWalletIDs() returns all wallet IDs')
-test.todo('store.readWallet() can decrypt and decode a wallet')
-test.todo('store.readWallet() throws proper error on wrong password')
+test('store.saveWallet() can update an existing wallet', async t => {
+  const filePath = temp.path()
+  const store = await createStore(filePath)
+
+  await store.saveWallet('walletID', 'somePassword', { privateKey: 'secretPrivateKey' })
+  await store.saveWallet('walletID', 'somePassword', { privateKey: 'newPrivateKey' })
+
+  t.deepEqual(store.readWallet('walletID', 'somePassword'), { privateKey: 'newPrivateKey' })
+
+  let reloadedStore = await loadStore(filePath)
+  t.deepEqual(reloadedStore.readWallet('walletID', 'somePassword'), { privateKey: 'newPrivateKey' })
+
+  await store.saveWallet('walletID', 'newPassword', { privateKey: 'newPrivateKey' })
+  t.deepEqual(store.readWallet('walletID', 'newPassword'), { privateKey: 'newPrivateKey' })
+
+  reloadedStore = await loadStore(filePath)
+  t.deepEqual(reloadedStore.readWallet('walletID', 'newPassword'), { privateKey: 'newPrivateKey' })
+})
+
 test.todo('store.removeWallet() can delete a wallet from the store')
