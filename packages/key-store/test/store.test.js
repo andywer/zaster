@@ -1,6 +1,5 @@
 import test from 'ava'
 import fs from 'mz/fs'
-import path from 'path'
 import temp from 'temp'
 import { createStore, loadStore } from '../src'
 
@@ -23,6 +22,18 @@ test('store.saveWallet() can save a new wallet', async t => {
 
   t.deepEqual(reloadedStore.getWalletIDs(), ['walletID'])
   t.deepEqual(await reloadedStore.readWallet('walletID', 'somePassword'), { privateKey: 'secretPrivateKey' })
+})
+
+test('store file matches snapshot', async t => {
+  const filePath = temp.path()
+  const store = await createStore(filePath)
+
+  await store.saveWallet('walletID', 'somePassword', { privateKey: 'secretPrivateKey' }, { hash: 'sha256', iterations: 20000, salt: 'AbCdEf01234' })
+
+  t.deepEqual(store.getWalletIDs(), ['walletID'])
+  t.deepEqual(await store.readWallet('walletID', 'somePassword'), { privateKey: 'secretPrivateKey' })
+
+  t.snapshot(JSON.parse(await fs.readFile(filePath)))
 })
 
 test('store.saveWallet() can update an existing wallet', async t => {
