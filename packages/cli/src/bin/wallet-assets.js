@@ -18,6 +18,6 @@ function printAvailableAssets () {
   console.log('Supported assets:')
 
   for (const asset of assets) {
-    console.log(`  - ${chalk.blue(asset.id)} ${chalk.grey(asset.name)}`)
+    console.log(`  ${chalk.blue(asset.id)} ${chalk.grey(asset.name)}`)
   }
 }
