@@ -16,9 +16,9 @@ Encrypted wallet storage. Saves arbitrary JSON data encrypted using AES-256 to t
 ### Store
 
 #### store.getWalletIDs(): string[]
-#### store.readWallet(walletID: string, password: string): WalletData
-#### store.saveWallet(walletID: string, password: string, data: WalletData): Promise
-#### store.removeWallet(walletID: string): Promise
+#### store.readWallet(walletID: string, password: string): Promise<WalletData>
+#### store.saveWallet(walletID: string, password: string, data: WalletData): Promise<void>
+#### store.removeWallet(walletID: string): Promise<void>
 
 #### WalletData
 

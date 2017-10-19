@@ -14,7 +14,7 @@ export function createStore ({ saveFile, wallets = {} }) {
       wallets[walletId] = { data, salt }
       await saveFile(stringifyStore({ wallets }))
     },
-    readWallet (walletId, password) {
+    async readWallet (walletId, password) {
       const { data, salt } = wallets[walletId]
       return JSON.parse(decryptWalletData(data, password, salt))
     },

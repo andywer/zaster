@@ -17,12 +17,12 @@ test('store.saveWallet() can save a new wallet', async t => {
   await store.saveWallet('walletID', 'somePassword', { privateKey: 'secretPrivateKey' })
 
   t.deepEqual(store.getWalletIDs(), ['walletID'])
-  t.deepEqual(store.readWallet('walletID', 'somePassword'), { privateKey: 'secretPrivateKey' })
+  t.deepEqual(await store.readWallet('walletID', 'somePassword'), { privateKey: 'secretPrivateKey' })
 
   const reloadedStore = await loadStore(filePath)
 
   t.deepEqual(reloadedStore.getWalletIDs(), ['walletID'])
-  t.deepEqual(reloadedStore.readWallet('walletID', 'somePassword'), { privateKey: 'secretPrivateKey' })
+  t.deepEqual(await reloadedStore.readWallet('walletID', 'somePassword'), { privateKey: 'secretPrivateKey' })
 })
 
 test('store.saveWallet() can update an existing wallet', async t => {
@@ -32,16 +32,16 @@ test('store.saveWallet() can update an existing wallet', async t => {
   await store.saveWallet('walletID', 'somePassword', { privateKey: 'secretPrivateKey' })
   await store.saveWallet('walletID', 'somePassword', { privateKey: 'newPrivateKey' })
 
-  t.deepEqual(store.readWallet('walletID', 'somePassword'), { privateKey: 'newPrivateKey' })
+  t.deepEqual(await store.readWallet('walletID', 'somePassword'), { privateKey: 'newPrivateKey' })
 
   let reloadedStore = await loadStore(filePath)
-  t.deepEqual(reloadedStore.readWallet('walletID', 'somePassword'), { privateKey: 'newPrivateKey' })
+  t.deepEqual(await reloadedStore.readWallet('walletID', 'somePassword'), { privateKey: 'newPrivateKey' })
 
   await store.saveWallet('walletID', 'newPassword', { privateKey: 'newPrivateKey' })
-  t.deepEqual(store.readWallet('walletID', 'newPassword'), { privateKey: 'newPrivateKey' })
+  t.deepEqual(await store.readWallet('walletID', 'newPassword'), { privateKey: 'newPrivateKey' })
 
   reloadedStore = await loadStore(filePath)
-  t.deepEqual(reloadedStore.readWallet('walletID', 'newPassword'), { privateKey: 'newPrivateKey' })
+  t.deepEqual(await reloadedStore.readWallet('walletID', 'newPassword'), { privateKey: 'newPrivateKey' })
 })
 
 test('store.removeWallet() can delete a wallet from the store', async t => {
