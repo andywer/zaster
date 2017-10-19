@@ -8,15 +8,17 @@ export function createStore ({ saveFile, wallets = {} }) {
     async save () {
       await saveFile(stringifyStore({ wallets }))
     },
-    async saveWallet (walletId, password, walletData) {
-      const salt = walletId in wallets ? wallets[walletId].salt : (await createRandomBuffer(8)).toString('hex')
-      const data = encryptWalletData(JSON.stringify(walletData), password, salt)
-      wallets[walletId] = { data, salt }
+    async saveWallet (walletId, password, walletData, keyMeta = null) {
+      if (!keyMeta) {
+        keyMeta = walletId in wallets ? wallets[walletId].keyMeta : await createKeyMetadata()
+      }
+      const data = encryptWalletData(JSON.stringify(walletData), password, keyMeta)
+      wallets[walletId] = { data, keyMeta }
       await saveFile(stringifyStore({ wallets }))
     },
     async readWallet (walletId, password) {
-      const { data, salt } = wallets[walletId]
-      return JSON.parse(decryptWalletData(data, password, salt))
+      const { data, keyMeta } = wallets[walletId]
+      return JSON.parse(decryptWalletData(data, password, keyMeta))
     },
     async removeWallet (walletId) {
       if (!(walletId in wallets)) {
@@ -28,22 +30,31 @@ export function createStore ({ saveFile, wallets = {} }) {
   }
 }
 
-function encryptWalletData (stringData, password, salt) {
-  const key = deriveKeyFromPassword(password, salt)
+function encryptWalletData (stringData, password, keyMeta) {
+  const key = deriveKeyFromPassword(password, keyMeta)
   const cipher = createCipher('aes-256-xts', key)
   const encrypted = cipher.update(stringData, 'utf8', 'base64') + cipher.final('base64')
   return encrypted
 }
 
-function decryptWalletData (base64Data, password, salt) {
-  const key = deriveKeyFromPassword(password, salt)
+function decryptWalletData (base64Data, password, keyMeta) {
+  const key = deriveKeyFromPassword(password, keyMeta)
   const decipher = createDecipher('aes-256-xts', key)
   const decrypted = decipher.update(base64Data, 'base64', 'utf8') + decipher.final('utf8')
   return decrypted
 }
 
-function deriveKeyFromPassword (password, salt) {
-  return pbkdf2Sync(password, Buffer.from(salt, 'hex'), 20000, 256, 'sha256').toString('base64')
+function deriveKeyFromPassword (password, { hash, iterations, salt }) {
+  return pbkdf2Sync(password, Buffer.from(salt, 'hex'), iterations, 256, hash).toString('base64')
+}
+
+async function createKeyMetadata () {
+  const buffer = await createRandomBuffer(8)
+  return {
+    hash: 'sha256',
+    iterations: 20000,
+    salt: buffer.toString('hex')
+  }
 }
 
 async function createRandomBuffer (sizeInBytes) {
