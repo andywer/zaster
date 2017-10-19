@@ -7,7 +7,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "babel --out-dir lib/ src/",
-    "pretest": "standard src/**/*.js",
+    "pretest": "standard src/**/*.js test/**/*.js",
     "test": "ava",
     "prepublishOnly": "npm run build && npm test"
   },
