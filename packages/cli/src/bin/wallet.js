@@ -5,5 +5,6 @@ import pkg from '../../package.json'
 
 program
   .command('assets', 'List supported crypto coins.')
+  .command('ls', 'List all wallets.')
   .version(pkg.version)
   .parse(process.argv)
