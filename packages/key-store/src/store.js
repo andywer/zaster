@@ -1,22 +1,27 @@
 import { createCipher, createDecipher, pbkdf2Sync, randomBytes } from 'crypto'
 
 export function createStore ({ saveFile, wallets = {} }) {
+  const saveToDisk = () => saveFile(stringifyStore({ wallets }))
+
   return {
     getWalletIDs () {
       return Object.keys(wallets)
     },
     async save () {
-      await saveFile(stringifyStore({ wallets }))
+      await saveToDisk()
     },
     async saveWallet (walletId, password, walletData, keyMeta = null) {
       if (!keyMeta) {
         keyMeta = walletId in wallets ? wallets[walletId].keyMeta : await createKeyMetadata()
       }
       const data = encryptWalletData(JSON.stringify(walletData), password, keyMeta)
-      wallets[walletId] = { data, keyMeta }
-      await saveFile(stringifyStore({ wallets }))
+      wallets[walletId] = { data, keyMeta, public: null }
+      await saveToDisk()
     },
     async readWallet (walletId, password) {
+      if (!(walletId in wallets)) {
+        throw new Error(`Wallet ${walletId} not found in store.`)
+      }
       const { data, keyMeta } = wallets[walletId]
       return JSON.parse(decryptWalletData(data, password, keyMeta))
     },
@@ -25,7 +30,20 @@ export function createStore ({ saveFile, wallets = {} }) {
         throw new Error(`Wallet ${walletId} not found in store.`)
       }
       delete wallets[walletId]
-      await saveFile(stringifyStore({ wallets }))
+      await saveToDisk()
+    },
+    async saveWalletPublicData (walletId, publicData) {
+      if (!(walletId in wallets)) {
+        throw new Error(`Wallet ${walletId} not found in store.`)
+      }
+      wallets[walletId].public = publicData
+      await saveToDisk()
+    },
+    async readWalletPublicData (walletId) {
+      if (!(walletId in wallets)) {
+        throw new Error(`Wallet ${walletId} not found in store.`)
+      }
+      return wallets[walletId].public
     }
   }
 }

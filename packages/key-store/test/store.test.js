@@ -29,6 +29,7 @@ test('store file matches snapshot', async t => {
   const store = await createStore(filePath)
 
   await store.saveWallet('walletID', 'somePassword', { privateKey: 'secretPrivateKey' }, { hash: 'sha256', iterations: 20000, salt: 'AbCdEf01234' })
+  await store.saveWalletPublicData('walletID', { publicKey: 'publicKey' })
 
   t.deepEqual(store.getWalletIDs(), ['walletID'])
   t.deepEqual(await store.readWallet('walletID', 'somePassword'), { privateKey: 'secretPrivateKey' })
@@ -67,4 +68,19 @@ test('store.removeWallet() can delete a wallet from the store', async t => {
 
   const reloadedStore = await loadStore(filePath)
   t.deepEqual(reloadedStore.getWalletIDs(), [])
+})
+
+test.todo('store.readWalletPublicData() can read the unencrypted wallet metadata')
+
+test('store.saveWalletPublicData() can save unencrypted wallet metadata', async t => {
+  const filePath = temp.path()
+  const store = await createStore(filePath)
+
+  await store.saveWallet('walletID', 'somePassword', { privateKey: 'secretPrivateKey' })
+  await store.saveWalletPublicData('walletID', { publicKey: 'publicKey' })
+
+  t.deepEqual(await store.readWalletPublicData('walletID'), { publicKey: 'publicKey' })
+
+  const reloadedStore = await loadStore(filePath)
+  t.deepEqual(await reloadedStore.readWalletPublicData('walletID'), { publicKey: 'publicKey' })
 })
