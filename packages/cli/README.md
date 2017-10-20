@@ -7,8 +7,8 @@ Digital payment, as simple as Git. CLI tool of the @wallet library.
 ```
 # Features in Step I
 
-$ wallet add walletId --asset <asset> --private-key <key> [--testnet]
-$ wallet create walletId --asset <asset> [--testnet]
+$ wallet add <walletId> --asset <asset> --private-key <key> [--testnet]
+$ wallet create <walletId> --asset <asset> [--testnet]
 $ wallet ls
 $ wallet rm <walletID>
 
