@@ -3,6 +3,7 @@ import program from 'commander'
 import { loadOrCreateStore } from '@wallet/key-store'
 import pkg from '../../package.json'
 import { keyStorePath } from '../config'
+import { handleCLIError } from '../errors'
 
 program
   .name('wallet')
@@ -12,10 +13,7 @@ program
   .parse(process.argv)
 
 printWallets()
-  .catch(error => {
-    console.error(error.stack)
-    process.exit(1)
-  })
+  .catch(handleCLIError)
 
 async function printWallets () {
   const store = await loadOrCreateStore(keyStorePath)
@@ -25,7 +23,18 @@ async function printWallets () {
     console.log('(No wallets)')
   } else {
     for (const walletID of walletIDs) {
-      console.log(`  ${walletID}`)
+      const margin = Math.max(16 - walletID.length, 0)
+      const metadata = await store.readWalletPublicData(walletID)
+      console.log(`  ${walletID}${' '.repeat(margin)}\t${chalk.grey(formatMetadata(metadata))}`)
     }
   }
+}
+
+function formatMetadata (metadata) {
+  const metaPropStrings = [
+    `Asset: ${metadata.asset}`,
+    metadata.testnet ? 'Testnet' : ''
+  ]
+  const combinedString = metaPropStrings.filter(string => Boolean(string)).join(', ')
+  return `[ ${combinedString} ]`
 }
