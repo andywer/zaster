@@ -3,6 +3,7 @@ import prompt from 'prompt-promise'
 import { loadOrCreateStore } from '@wallet/key-store'
 import pkg from '../../package.json'
 import { keyStorePath } from '../config'
+import { init as initImplementations } from '../implementations'
 import { newInputError, handleCLIError } from '../errors'
 
 program
@@ -21,9 +22,11 @@ addWallet(program)
 async function addWallet ({ args, ...options }) {
   const [ walletId ] = args
   const { asset, privateKey, testnet = false } = options
+  const { assets: availableAssets } = initImplementations()
 
   if (args.length !== 1) throw newInputError(`Expected one argument: The wallet ID. Got ${args.length}.`)
   if (!asset) throw newInputError(`No asset passed. Use --asset.`)
+  if (!availableAssets.find(availableAsset => availableAsset.id === asset)) throw newInputError(`Unknown asset: ${asset}`)
   if (!privateKey) throw newInputError(`No private key passed. Use --private-key.`)
 
   const store = await loadOrCreateStore(keyStorePath)
