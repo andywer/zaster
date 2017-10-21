@@ -34,7 +34,11 @@ async function addWallet ({ args, ...options }) {
   const presentWalletIDs = store.getWalletIDs()
   if (presentWalletIDs.includes(walletId)) throw newInputError(`Wallet '${walletId}' exists already.`)
 
+  // TODO: Let network implementation do a sanity check on the private key
+
   const password = await readPassword()
+  // TODO: Warn if password is insecure
+
   await store.saveWallet(walletId, password, { privateKey })
   await store.saveWalletPublicData(walletId, { asset, testnet })
 
