@@ -53,6 +53,7 @@ $ wallet stellar-trustline rm <walletID> <trustline>
 
 * Securely sync private keys across machines
 * Two-factor-authentication
+* HTTP/SMTP-like transaction notation standard?
 
 
 ## Additional considerations
