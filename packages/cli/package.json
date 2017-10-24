@@ -21,11 +21,12 @@
     "@wallet/stellar": "^0.1.0",
     "chalk": "^2.1.0",
     "commander": "^2.11.0",
-    "lodash": "^4.17.4",
-    "prompt-promise": "^1.0.3"
+    "input": "^1.0.1",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "execa": "^0.8.0",
-    "strip-ansi": "^4.0.0"
+    "strip-ansi": "^4.0.0",
+    "temp": "^0.8.3"
   }
 }

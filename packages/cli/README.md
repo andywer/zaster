@@ -61,3 +61,8 @@ $ wallet stellar-trustline rm <walletID> <trustline>
 Keep in mind that
 
 * a network/coin might support different types of tokens
+
+
+## Environment variables
+
+* `WALLET_STORE_PATH` - Path to key store file. Defaults to `~/.wallets`.

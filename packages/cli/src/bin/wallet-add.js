@@ -1,5 +1,5 @@
 import program from 'commander'
-import prompt from 'prompt-promise'
+import input from 'input'
 import { loadOrCreateStore } from '@wallet/key-store'
 import pkg from '../../package.json'
 import { keyStorePath } from '../config'
@@ -14,6 +14,7 @@ program
   .option('--asset <asset>', 'The wallet\'s asset. One of `wallet assets`.')
   .option('--private-key <key>', 'The private key.')
   .option('--testnet', 'Set this flag to indicate that this is a testnet wallet.')
+  .option('--no-password-repeat', 'Do not prompt for password twice.')
   .parse(process.argv)
 
 addWallet(program)
@@ -36,7 +37,7 @@ async function addWallet ({ args, ...options }) {
 
   // TODO: Let network implementation do a sanity check on the private key
 
-  const password = await readPassword()
+  const password = await readPassword({ repeat: options.passwordRepeat })
   // TODO: Warn if password is insecure
 
   await store.saveWallet(walletId, password, { privateKey })
@@ -49,10 +50,13 @@ async function addWallet ({ args, ...options }) {
   }
 }
 
-async function readPassword () {
-  const password = await prompt.password(`Password: `)
-  const repeatedPassword = await prompt.password(`Repeat password: `)
+async function readPassword ({ repeat = true }) {
+  const password = await input.password(`Password: `)
 
-  if (repeatedPassword !== password) throw newInputError(`Passwords do not match.`)
+  if (repeat) {
+    const repeatedPassword = await input.password(`Repeat password: `)
+    if (repeatedPassword !== password) throw newInputError(`Passwords do not match.`)
+  }
+
   return password
 }

@@ -1,5 +1,4 @@
 import test from 'ava'
-import chalk from 'chalk'
 import stripAnsi from 'strip-ansi'
 import shell from './helpers/shell'
 
