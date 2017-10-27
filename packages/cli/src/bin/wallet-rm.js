@@ -1,5 +1,5 @@
 import program from 'commander'
-import { loadStore } from '@wallet/key-store'
+import { loadStore } from 'key-store'
 import pkg from '../../package.json'
 import { keyStorePath } from '../config'
 import { newInputError, handleCLIError } from '../errors'

@@ -1,7 +1,7 @@
 import test from 'ava'
+import { loadStore } from 'key-store'
 import stripAnsi from 'strip-ansi'
 import temp from 'temp'
-import { loadStore } from '@wallet/key-store'
 import shell from './helpers/shell'
 
 temp.track()

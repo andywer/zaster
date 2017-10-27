@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import program from 'commander'
-import { loadOrCreateStore } from '@wallet/key-store'
+import { loadOrCreateStore } from 'key-store'
 import pkg from '../../package.json'
 import { keyStorePath } from '../config'
 import { handleCLIError } from '../errors'

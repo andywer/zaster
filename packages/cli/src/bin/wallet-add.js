@@ -1,6 +1,6 @@
 import program from 'commander'
 import input from 'input'
-import { loadOrCreateStore } from '@wallet/key-store'
+import { loadOrCreateStore } from 'key-store'
 import pkg from '../../package.json'
 import { keyStorePath } from '../config'
 import { init as initImplementations } from '../implementations'
