@@ -1,0 +1,19 @@
+{
+  "name": "@wallet/sdk",
+  "version": "0.1.0",
+  "description": "Digital payment for the masses. Manage crypto funds with ease.",
+  "author": "Andy Wermke (https://github.com/andywer)",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">= 6"
+  },
+  "scripts": {
+    "build": "babel --out-dir lib/ src/",
+    "test": "standard src/**/*.js",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
+  }
+}
