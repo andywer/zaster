@@ -1,6 +1,6 @@
-# Zaster
+# Project Zaster
 
-Headless multi-blockchain wallet. Build your own blockchain product based on the SDK or use the command line interface.
+Headless multi-blockchain wallet. Build your own blockchain product based on the SDK or use the command line interface to manage your crypto funds.
 
 
 ## Definition
@@ -21,3 +21,8 @@ Synonyms:
   <li>loot</li>
   <li>money</li>
 </ol>
+
+
+## License
+
+MIT
