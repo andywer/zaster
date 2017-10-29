@@ -17,15 +17,16 @@ $ wallet assets
 
 $ wallet show balance <walletID>
 $ wallet show balance <asset>:<address>
+$ wallet show transaction <walletID>:<txID>
 $ wallet show transaction <asset>:<txID>
 
 $ wallet pay <walletID> -d|--destination <address> -a|--amount <amount> -m|--memo <description>
 
-$ wallet destroy --mergeInto <address>
+$ wallet log <walletID> [--from-date <date>] [--to-date <date>]
+
+$ wallet merge-into <address>
 
 $ wallet stellar-create <walletId> <address> -a|--amount <amount>
-
-$ wallet log <walletID> [--from-date <date>] [--to-date <date>]
 
 
 # Features in Step II
