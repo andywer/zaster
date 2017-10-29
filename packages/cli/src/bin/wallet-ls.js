@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import program from 'commander'
 import { loadOrCreateStore } from 'key-store'
+import { padEnd } from 'lodash'
 import pkg from '../../package.json'
 import { keyStorePath } from '../config'
 import { handleCLIError } from '../errors'
@@ -23,9 +24,10 @@ async function printWallets () {
     console.log('(No wallets)')
   } else {
     for (const walletID of walletIDs) {
-      const margin = Math.max(16 - walletID.length, 0)
       const metadata = await store.readWalletPublicData(walletID)
-      console.log(`  ${walletID}${' '.repeat(margin)}\t${chalk.grey(formatMetadata(metadata))}`)
+      const formattedWalletID = padEnd(walletID, 16)
+      const formattedMetadata = chalk.grey(formatMetadata(metadata))
+      console.log(`  ${formattedWalletID}\t${formattedMetadata}`)
     }
   }
 }
