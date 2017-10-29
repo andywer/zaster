@@ -64,7 +64,7 @@ type Wallet = {
 type WalletData = any
 ```
 
-A wallet may contain private and public data. Private data will be saved encrypted using a user-supplied password, whereas the public data will be readable without any authentication. You don't need to care for asking the user for a password here; it will automatically be cared for on `readPrivate()`/`savePrivate()` calls.
+A wallet may contain private and public data. Private data will be saved in an encrypted way using a user-supplied password, whereas the public data will be readable without any authentication. You don't need to care for asking the user for a password here; it will automatically be cared for on `readPrivate()`/`savePrivate()` calls.
 
 
 ## To Do
@@ -73,3 +73,5 @@ A wallet may contain private and public data. Private data will be saved encrypt
 
 - `getTransactionHistory({ offset?: number, limit?: number, order?: 'ASC'|'DESC' } /* or date-time-based? maybe two functions? */): Observable<Transaction>`
 - `Transaction` type
+- `createTransaction(...): Promise<Transaction>`
+- `sendTransaction(...): Promise<void>`
