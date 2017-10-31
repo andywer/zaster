@@ -12,9 +12,15 @@ Returns the assets supported by this implementation.
 
 Asynchronously returns a unicode string representation of a wallet secret key.
 
-### `getAddressBalance(address: string): Promise<BigInteger>`
+### `getAddressBalance(address: string, ?options: object): Promise<BigInteger>`
 
 Asynchronously retrieves the balance of a given address. The value is always denominated as an integer of the assets smallest possible unit (satoshis for bitcoin, stroops for stellar, ...).
+
+```typescript
+type options = {
+  testnet?: boolean
+}
+```
 
 ### `getWalletBalance(wallet: Wallet): Promise<BigInteger>`
 

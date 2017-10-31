@@ -16,7 +16,7 @@ $ wallet backup <walletID>
 $ wallet assets
 
 $ wallet show balance <walletID>
-$ wallet show balance <asset>:<address>
+$ wallet show balance <asset>:<address> [--testnet]
 $ wallet show transaction <walletID>:<txID>
 $ wallet show transaction <asset>:<txID>
 
