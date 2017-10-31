@@ -5,15 +5,20 @@
   "author": "Andy Wermke (https://github.com/andywer)",
   "license": "MIT",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "engines": {
     "node": ">= 6"
   },
   "scripts": {
-    "build": "babel --out-dir lib/ src/",
-    "test": "standard src/**/*.js",
+    "build": "tsc",
+    "test": "tslint 'src/**/*.ts' -e '**/*.d.ts'",
     "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
     "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.80",
+    "@wallet/implementation-api": "^0.1.0"
   }
 }
