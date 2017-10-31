@@ -1,4 +1,4 @@
-/packages/*/lib/
+/packages/*/lib/**/*.js*
 .idea/
 .vscode/
 node_modules/
