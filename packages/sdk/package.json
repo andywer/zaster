@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "tslint 'src/**/*.ts' -e '**/*.d.ts'",
+    "test": "tslint --project . 'src/**/*.ts' -e '**/*.d.ts'",
     "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {

@@ -9,7 +9,7 @@ export function loadSDK (keyStore: KeyStore, implementations: Implementation[], 
   const assets = flatMap(implementations, implementation => implementation.getAssets())
 
   return {
-    get assets () {
+    get assets (): Asset[] {
       return assets
     }
   }
