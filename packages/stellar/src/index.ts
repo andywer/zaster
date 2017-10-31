@@ -1,4 +1,6 @@
-export function getAssets () {
+import { Asset } from '@wallet/implementation-api'
+
+export function getAssets (): Asset[] {
   return [
     {
       id: 'XLM',
