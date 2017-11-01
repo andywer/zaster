@@ -17,12 +17,10 @@ export type Asset = {
   name: string
 }
 
-export type Wallet = {
+export type Wallet<WalletPrivateData = any, WalletPublicData = any> = {
   asset: Asset,
-  readPrivate: () => Promise<WalletData>,
-  savePrivate: (data: WalletData) => Promise<void>,
-  readPublic: () => Promise<WalletData>,
-  savePublic: (data: WalletData) => Promise<void>
+  readPrivate: () => Promise<WalletPrivateData>,
+  savePrivate: (data: WalletPrivateData) => Promise<void>,
+  readPublic: () => Promise<WalletPublicData>,
+  savePublic: (data: WalletPublicData) => Promise<void>
 }
-
-type WalletData = any

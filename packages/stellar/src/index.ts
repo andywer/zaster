@@ -2,10 +2,12 @@ import { Big as BigNumber } from 'big.js'
 import { Asset, Wallet } from '@wallet/implementation-api'
 import { getHorizonServer, useNetwork } from './horizon'
 
-type WalletData = {
+export type PublicWalletData = {
   publicKey: string,
   testnet: boolean
 }
+
+export type StellarWallet = Wallet<any, PublicWalletData>
 
 export function getAssets (): Asset[] {
   return [
@@ -30,8 +32,8 @@ export async function getAddressBalance (address: string, options: AddressBalanc
   return balanceObject ? BigNumber(balanceObject.balance) : BigNumber(0)
 }
 
-export async function getWalletBalance (wallet: Wallet): Promise<BigNumber> {
-  const { publicKey, testnet }: WalletData = await wallet.readPublic()
+export async function getWalletBalance (wallet: StellarWallet): Promise<BigNumber> {
+  const { publicKey, testnet }: PublicWalletData = await wallet.readPublic()
 
   return getAddressBalance(publicKey, { testnet })
 }
