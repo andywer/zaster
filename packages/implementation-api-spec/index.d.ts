@@ -16,3 +16,13 @@ export type Asset = {
   aliases: string[],
   name: string
 }
+
+export type Wallet = {
+  asset: Asset,
+  readPrivate: () => Promise<WalletData>,
+  savePrivate: (data: WalletData) => Promise<void>,
+  readPublic: () => Promise<WalletData>,
+  savePublic: (data: WalletData) => Promise<void>
+}
+
+type WalletData = any
