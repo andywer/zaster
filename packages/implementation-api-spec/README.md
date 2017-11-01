@@ -12,9 +12,9 @@ Returns the assets supported by this implementation.
 
 Asynchronously returns a unicode string representation of a wallet secret key.
 
-### `getAddressBalance(address: string, ?options: object): Promise<BigInteger>`
+### `getAddressBalance(address: string, ?options: object): Promise<BigNumber>`
 
-Asynchronously retrieves the balance of a given address. The value is always denominated as an integer of the assets smallest possible unit (satoshis for bitcoin, stroops for stellar, ...).
+Asynchronously retrieves the balance of a given address. The value is always denominated in the asset's usually used unit (bitcoin, not satoshis; stellar lumens, not stroops, ...).
 
 ```typescript
 type options = {
@@ -22,9 +22,9 @@ type options = {
 }
 ```
 
-### `getWalletBalance(wallet: Wallet): Promise<BigInteger>`
+### `getWalletBalance(wallet: Wallet): Promise<BigNumber>`
 
-Asynchronously retrieves the balance of a wallet. The value is always denominated as an integer of the assets smallest possible unit (satoshis for bitcoin, stroops for stellar, ...). This might be just a proxied call of `getAddressBalance()` or trigger some more complex logic, depending on the implementation.
+Asynchronously retrieves the balance of a wallet. The value is always denominated in the asset's usually used unit (bitcoin, not satoshis; stellar lumens, not stroops, ...). This might be just a proxied call of `getAddressBalance()` or trigger some more complex logic, depending on the implementation.
 
 
 ## Types
@@ -49,11 +49,11 @@ Example:
 }
 ```
 
-### BigInteger
+### BigNumber
 
 ```typescript
-// https://www.npmjs.com/package/big-integer
-import BigInteger = require('big-integer')
+// https://www.npmjs.com/package/big.js
+import BigNumber = require('big.js')
 ```
 
 ### Wallet
