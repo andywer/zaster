@@ -14,7 +14,6 @@
   },
   "devDependencies": {
     "@types/big.js": "^4.0.0",
-    "@types/got": "^7.1.4",
     "@wallet/implementation-api": "^0.1.0",
     "got": "^7.1.0"
   },
