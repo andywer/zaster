@@ -1,4 +1,5 @@
 import { Big as BigNumber } from 'big.js'
+import { Keypair } from 'stellar-sdk'
 import { Asset, Wallet } from '@wallet/implementation-api'
 import { getHorizonServer, useNetwork } from './horizon'
 
@@ -17,6 +18,10 @@ export function getAssets (): Asset[] {
       name: 'Stellar Lumens'
     }
   ]
+}
+
+export async function createPrivateKey () {
+  return Keypair.random().secret()
 }
 
 export type AddressBalanceOptions = { testnet?: boolean }

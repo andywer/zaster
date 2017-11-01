@@ -1,7 +1,7 @@
 import test from 'ava'
 import { Big as BigNumber } from 'big.js'
 import got = require('got')
-import { getAssets, getAddressBalance, getWalletBalance } from '../src'
+import { createPrivateKey, getAssets, getAddressBalance, getWalletBalance } from '../src'
 
 const getAccountBalance = (restAccountData: any): string => restAccountData.balances.find(balance => balance.asset_type === 'native').balance
 
@@ -9,6 +9,12 @@ test('getAssets() returns asset', t => {
   const assets = getAssets()
   t.is(assets.length, 1)
   t.is(assets[0].id, 'XLM')
+})
+
+test('createPrivateKey() can create a private key', async t => {
+  const privateKey = await createPrivateKey()
+  t.is(typeof privateKey, 'string')
+  t.regex(privateKey, /^S[A-Z0-9]{55}$/)
 })
 
 test('getAddressBalance() can retrieve a testnet balance', async t => {
