@@ -1,3 +1,5 @@
+import { Big as BigNumber } from 'big.js'
+
 export type KeyStore = {
   getWalletIDs (): string[],
   readWallet(walletID: string, password: string): Promise<any>,
@@ -8,7 +10,10 @@ export type KeyStore = {
 }
 
 export type Implementation = {
-  getAssets (): Asset[]
+  createPrivateKey (): Promise<string>,
+  getAssets (): Asset[],
+  getAddressBalance (address: string, options?: AddressBalanceOptions): Promise<BigNumber>
+  getWalletBalance (wallet: Wallet): Promise<BigNumber>
 }
 
 export type Asset = {
@@ -17,6 +22,7 @@ export type Asset = {
   name: string
 }
 
+// Internal wallet as used by implementations
 export type Wallet<WalletPrivateData = any, WalletPublicData = any> = {
   asset: Asset,
   readPrivate: () => Promise<WalletPrivateData>,
@@ -24,3 +30,5 @@ export type Wallet<WalletPrivateData = any, WalletPublicData = any> = {
   readPublic: () => Promise<WalletPublicData>,
   savePublic: (data: WalletPublicData) => Promise<void>
 }
+
+export type AddressBalanceOptions = { testnet?: boolean }
