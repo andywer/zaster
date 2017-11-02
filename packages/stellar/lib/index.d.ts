@@ -6,6 +6,7 @@ export declare type PublicWalletData = {
 };
 export declare type StellarWallet = Wallet<any, PublicWalletData>;
 export declare function getAssets(): Asset[];
+export declare function createPrivateKey(): Promise<any>;
 export declare type AddressBalanceOptions = {
     testnet?: boolean;
 };
