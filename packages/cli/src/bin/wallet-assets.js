@@ -1,11 +1,9 @@
 import chalk from 'chalk'
 import program from 'commander'
-import { loadOrCreateStore } from 'key-store'
 import { padEnd, sortBy } from 'lodash'
-import { loadSDK } from '@wallet/sdk'
 import pkg from '../../package.json'
-import { implementations, keyStorePath } from '../config'
 import { handleCLIError } from '../errors'
+import { initSDK } from '../sdk'
 
 program
   .name('wallet')
@@ -18,8 +16,7 @@ printAvailableAssets()
   .catch(handleCLIError)
 
 async function printAvailableAssets () {
-  const keyStore = await loadOrCreateStore(keyStorePath)
-  const sdk = loadSDK(keyStore, implementations)
+  const sdk = await initSDK()
 
   const formatAliases = aliases => {
     if (aliases.length === 0) {

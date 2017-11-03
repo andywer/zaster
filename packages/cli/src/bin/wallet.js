@@ -8,5 +8,6 @@ program
   .command('ls', 'List all wallets.')
   .command('add', 'Add a wallet by private key.')
   .command('rm', 'Remove a wallet.')
+  .command('show', 'Show a balance, transaction, ...')
   .version(pkg.version)
   .parse(process.argv)

@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "execa": "^0.8.0",
+    "got": "^7.1.0",
     "strip-ansi": "^4.0.0",
     "temp": "^0.8.3"
   }

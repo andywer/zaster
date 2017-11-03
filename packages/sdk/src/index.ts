@@ -2,12 +2,6 @@ import { Big as BigNumber } from 'big.js'
 import { flatMap } from 'lodash'
 import { Asset, Implementation, KeyStore, Wallet, AddressBalanceOptions } from '@wallet/implementation-api'
 
-type SDKWallet = {
-  id: string,
-  asset: Asset,
-  getBalance (): Promise<BigNumber>
-}
-
 export type RequestPassword = (wallet: Wallet) => Promise<string>
 export type LoadSDKOptions = {
   requestPassword?: RequestPassword
