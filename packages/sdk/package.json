@@ -18,6 +18,7 @@
     "lodash": "^4.17.4"
   },
   "devDependencies": {
+    "@types/big.js": "^4.0.0",
     "@types/lodash": "^4.14.80",
     "@wallet/implementation-api": "^0.1.0"
   }
