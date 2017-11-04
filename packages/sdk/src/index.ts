@@ -11,6 +11,25 @@ export type KeyStore = {
   removeWallet (walletID: string): Promise<void>
 }
 
+export type SDK = {
+  ledger: LedgerAPI,
+  wallets: WalletsAPI,
+  readonly assets: Asset[],
+  getAsset (assetID: string): Asset | null
+}
+
+export type LedgerAPI = {
+  getAddressBalance (asset: Asset, address: string, options?: AddressBalanceOptions): Promise<BigNumber>,
+  getWalletBalance (walletID: string): Promise<BigNumber>
+}
+
+export type WalletsAPI = {
+  addWallet (id: string, asset: Asset, privateKey: string, options?: object): Promise<Wallet>,
+  createWallet (id: string, asset: Asset, options?: object): Promise<Wallet>,
+  getWalletIDs (): string[],
+  removeWallet (id: string): Promise<void>
+}
+
 export type RequestPassword = (wallet: Wallet) => Promise<string>
 export type LoadSDKOptions = {
   requestPassword?: RequestPassword
@@ -20,19 +39,54 @@ const defaultRequestPassword = async () => {
   throw new Error('No requestPassword() function passed to loadSDK().')
 }
 
-export function loadSDK (keyStore: KeyStore, platforms: Platform[], { requestPassword = defaultRequestPassword }: LoadSDKOptions = {}) {
+export function loadSDK (keyStore: KeyStore, platforms: Platform[], { requestPassword = defaultRequestPassword }: LoadSDKOptions = {}): SDK {
   const assets = flatMap(platforms, implementation => implementation.getAssets())
-  const getPlatform = (assetID: string) => findPlatform(platforms, assetID)
-  const openWalletByID = async (walletID: string) => openWallet({ keyStore, platforms, requestPassword }, walletID)
+  const instantiateWallet = (asset: Asset, walletID: string) => createWalletInstance({ keyStore, requestPassword }, walletID, asset)
+
+  const getAsset = (assetID: string) => {
+    return assets.find(asset => asset.id === assetID || asset.aliases.includes(assetID)) || null
+  }
+  const getPlatform = (asset: Asset) => {
+    const assetsIncludesThisAsset = (assets: Asset[]) => assets.some(platformAsset => platformAsset.id === asset.id)
+    const platform = platforms.find(platform => assetsIncludesThisAsset(platform.getAssets()))
+
+    if (platform) {
+      return platform
+    } else {
+      throw new Error(`No platform implementation supporting asset ${asset.id} (${asset.name}) found.`)
+    }
+  }
+  const openWalletByID = async (walletID: string) => {
+    const publicData = await keyStore.readWalletPublicData(walletID)
+
+    const assetID = publicData ? publicData.asset : null
+    if (!assetID) throw new Error(`Wallet ${walletID} in key store is lacking the 'asset' property in public data.`)
+
+    const asset = getAsset(assetID)
+    if (!asset) throw new Error(`No asset matching ${assetID} found. Is the related platform implementation installed?`)
+
+    const platform = getPlatform(asset)
+    const wallet = instantiateWallet(asset, walletID)
+
+    return { platform, wallet }
+  }
 
   return {
     get assets (): Asset[] {
       return assets
     },
-    getWalletIDs (): string[] {
-      return keyStore.getWalletIDs()
-    },
-    async getAddressBalance (asset: string, address: string, options: AddressBalanceOptions = {}): Promise<BigNumber> {
+    getAsset,
+    ledger: createLedgerAPI(getPlatform, openWalletByID),
+    wallets: createWalletsAPI(keyStore, getPlatform, instantiateWallet)
+  }
+}
+
+function createLedgerAPI (
+  getPlatform: (asset: Asset) => Platform,
+  openWalletByID: (walletID: string) => Promise<{ platform: Platform, wallet: Wallet }>
+): LedgerAPI {
+  return {
+    async getAddressBalance (asset: Asset, address: string, options: AddressBalanceOptions = {}): Promise<BigNumber> {
       const platform = getPlatform(asset)
       return platform.getAddressBalance(address, options)
     },
@@ -43,21 +97,32 @@ export function loadSDK (keyStore: KeyStore, platforms: Platform[], { requestPas
   }
 }
 
-async function openWallet (
-  { keyStore, platforms, requestPassword }: { keyStore: KeyStore, platforms: Platform[], requestPassword: RequestPassword },
-  walletID: string
-): Promise<{ platform: Platform, wallet: Wallet }> {
-  const publicData = await keyStore.readWalletPublicData(walletID)
-
-  if (!publicData.asset) throw new Error(`Wallet ${walletID} in key store is lacking the 'asset' property in public data.`)
-  const assetID = publicData.asset
-
-  const platform = findPlatform(platforms, assetID)
-  const asset = platform.getAssets().find(asset => asset.id === assetID || asset.aliases.some(alias => alias === assetID))
-  if (!asset) throw new Error(`Platform (${platform.getAssets().map(asset => asset.id).join(', ')}) does not support asset ${assetID}.`)
-
-  const wallet = createWalletInstance({ keyStore, requestPassword }, walletID, asset)
-  return { platform, wallet }
+function createWalletsAPI (
+  keyStore: KeyStore,
+  getPlatform: (asset: Asset) => Platform,
+  instantiateWallet: (asset: Asset, walletID: string) => Wallet
+): WalletsAPI {
+  const walletsAPI = {
+    getWalletIDs () {
+      return keyStore.getWalletIDs()
+    },
+    async addWallet (id: string, asset: Asset, privateKey: string, options: object = {}) {
+      const platform = getPlatform(asset)
+      const wallet = instantiateWallet(asset, id)
+      await keyStore.saveWalletPublicData(id, { asset: asset.id })
+      await platform.initWallet(wallet, privateKey, options)
+      return wallet
+    },
+    async createWallet (id: string, asset: Asset, options: object = {}) {
+      const platform = getPlatform(asset)
+      const privateKey = await platform.createPrivateKey()
+      return walletsAPI.addWallet(id, asset, privateKey, options)
+    },
+    async removeWallet (walletID: string) {
+      await keyStore.removeWallet(walletID)
+    }
+  }
+  return walletsAPI
 }
 
 function createWalletInstance (
@@ -86,16 +151,4 @@ function createWalletInstance (
     }
   }
   return wallet
-}
-
-function findPlatform (platforms: Platform[], assetID: string): Platform {
-  const assetByIdOrAlias = (asset: Asset) => asset.id === assetID || asset.aliases.some(alias => alias === assetID)
-  const platformByAssetID = (platform: Platform) => platform.getAssets().some(assetByIdOrAlias)
-
-  const platform = platforms.find(platformByAssetID)
-  if (platform) {
-    return platform
-  } else {
-    throw new Error(`Unhandled asset: ${assetID}. No matching platform found.`)
-  }
 }

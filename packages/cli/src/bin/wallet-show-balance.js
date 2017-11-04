@@ -21,8 +21,9 @@ async function showBalance ({ args, testnet = false }) {
   const [ arg ] = args
 
   if (arg.indexOf(':') > -1) {
-    const [ asset, address ] = arg.split(':')
-    const balance = await sdk.getAddressBalance(asset, address, { testnet })
+    const [ assetID, address ] = arg.split(':')
+    const asset = sdk.getAsset(assetID)
+    const balance = await sdk.ledger.getAddressBalance(asset, address, { testnet })
     console.log(balance.toString())
   } else {
     // TODO
