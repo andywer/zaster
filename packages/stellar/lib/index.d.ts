@@ -1,12 +1,16 @@
 import { Big as BigNumber } from 'big.js';
-import { Asset, Wallet } from '@wallet/platform-api';
+import { Asset, Wallet, InitWalletOptions } from '@wallet/platform-api';
 export declare type PublicWalletData = {
     publicKey: string;
     testnet: boolean;
 };
-export declare type StellarWallet = Wallet<any, PublicWalletData>;
+export declare type PrivateWalletData = {
+    privateKey: string;
+};
+export declare type StellarWallet = Wallet<PrivateWalletData, PublicWalletData>;
 export declare function getAssets(): Asset[];
 export declare function createPrivateKey(): Promise<any>;
+export declare function initWallet(wallet: StellarWallet, privateKey: string, options?: InitWalletOptions): Promise<void>;
 export declare type AddressBalanceOptions = {
     testnet?: boolean;
 };

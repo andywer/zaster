@@ -1,6 +1,6 @@
 import { Big as BigNumber } from 'big.js'
 import { Keypair } from 'stellar-sdk'
-import { Asset, Wallet } from '@wallet/platform-api'
+import { Asset, Wallet, InitWalletOptions } from '@wallet/platform-api'
 import { getHorizonServer, useNetwork } from './horizon'
 
 export type PublicWalletData = {
@@ -8,7 +8,11 @@ export type PublicWalletData = {
   testnet: boolean
 }
 
-export type StellarWallet = Wallet<any, PublicWalletData>
+export type PrivateWalletData = {
+  privateKey: string
+}
+
+export type StellarWallet = Wallet<PrivateWalletData, PublicWalletData>
 
 export function getAssets (): Asset[] {
   return [
@@ -22,6 +26,14 @@ export function getAssets (): Asset[] {
 
 export async function createPrivateKey () {
   return Keypair.random().secret()
+}
+
+export async function initWallet (wallet: StellarWallet, privateKey: string, options: InitWalletOptions = {}) {
+  const { testnet = false } = options
+  const keypair = Keypair.fromSecret(privateKey)
+
+  await wallet.savePrivate({ privateKey })
+  await wallet.savePublic({ publicKey: keypair.publicKey(), testnet })
 }
 
 export type AddressBalanceOptions = { testnet?: boolean }

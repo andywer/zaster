@@ -1,6 +1,15 @@
 import { Big as BigNumber } from 'big.js'
 import { flatMap } from 'lodash'
-import { Asset, KeyStore, Platform, Wallet, AddressBalanceOptions } from '@wallet/platform-api'
+import { Asset, Platform, Wallet, AddressBalanceOptions } from '@wallet/platform-api'
+
+export type KeyStore = {
+  getWalletIDs (): string[],
+  readWallet (walletID: string, password: string): Promise<any>,
+  saveWallet (walletID: string, password: string, data: any): Promise<void>,
+  readWalletPublicData (walletID: string): Promise<any>,
+  saveWalletPublicData (walletID: string, data: any): Promise<void>,
+  removeWallet (walletID: string): Promise<void>
+}
 
 export type RequestPassword = (wallet: Wallet) => Promise<string>
 export type LoadSDKOptions = {

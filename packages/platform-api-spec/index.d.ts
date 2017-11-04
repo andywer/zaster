@@ -1,20 +1,15 @@
 import { Big as BigNumber } from 'big.js'
 
-export type KeyStore = {
-  getWalletIDs (): string[],
-  readWallet(walletID: string, password: string): Promise<any>,
-  saveWallet(walletID: string, password: string, data: any): Promise<void>,
-  readWalletPublicData(walletID: string): Promise<any>,
-  saveWalletPublicData(walletID: string, data: any): Promise<void>,
-  removeWallet(walletID: string): Promise<void>
+export type Platform = {
+  getAssets (): Asset[],
+  createPrivateKey (): Promise<string>,
+  getAddressBalance (address: string, options?: AddressBalanceOptions): Promise<BigNumber>,
+  getWalletBalance (wallet: Wallet): Promise<BigNumber>,
+  initWallet (wallet: Wallet, privateKey: string, options?: InitWalletOptions): Promise<void>
 }
 
-export type Platform = {
-  createPrivateKey (): Promise<string>,
-  getAssets (): Asset[],
-  getAddressBalance (address: string, options?: AddressBalanceOptions): Promise<BigNumber>
-  getWalletBalance (wallet: Wallet): Promise<BigNumber>
-}
+export type AddressBalanceOptions = { testnet?: boolean }
+export type InitWalletOptions = { testnet?: boolean }
 
 export type Asset = {
   id: string,
@@ -22,7 +17,7 @@ export type Asset = {
   name: string
 }
 
-// Internal wallet as used by implementations
+// Internal wallet as used by platforms
 export type Wallet<WalletPrivateData = any, WalletPublicData = any> = {
   asset: Asset,
   readPrivate: () => Promise<WalletPrivateData>,
@@ -30,5 +25,3 @@ export type Wallet<WalletPrivateData = any, WalletPublicData = any> = {
   readPublic: () => Promise<WalletPublicData>,
   savePublic: (data: WalletPublicData) => Promise<void>
 }
-
-export type AddressBalanceOptions = { testnet?: boolean }
