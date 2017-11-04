@@ -23,6 +23,31 @@ Synonyms:
 </ol>
 
 
+## How to use
+
+Check out the [**CLI tool**](./packages/cli) to make blockchain transactions and manage wallets/keys using the command line.
+
+Building your own product? Check out [**the SDK**](./packages/sdk) to create advanced applications and services using a blockchain of your choice.
+
+
+## Architecture
+
+```
+                      CLI
+
+                      ||
+                      \/
+
++-------------------------------------------------+
+|                     SDK                         |
++-------------------------------------------------+
+|                                                 |
+|   Platform A      Platform B       Platform C   |
+|   (eg. Bitcoin)   (eg. Ethereum)   (...)        |
++-------------------------------------------------+
+```
+
+
 ## License
 
 MIT
