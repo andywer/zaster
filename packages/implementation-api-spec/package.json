@@ -1,8 +1,0 @@
-{
-  "name": "@wallet/implementation-api",
-  "version": "0.1.0",
-  "types": "./index.d.ts",
-  "devDependencies": {
-    "@types/big.js": "^4.0.0"
-  }
-}

@@ -1,6 +1,7 @@
-# Implementation API Specification
+# Platform API Specification
 
-Specification for @wallet network implementations.
+Specification for @wallet platform implementations, like Bitcoin, Ethereum, ...
+
 
 ## Package exports
 

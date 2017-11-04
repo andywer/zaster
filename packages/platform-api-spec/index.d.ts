@@ -9,7 +9,7 @@ export type KeyStore = {
   removeWallet(walletID: string): Promise<void>
 }
 
-export type Implementation = {
+export type Platform = {
   createPrivateKey (): Promise<string>,
   getAssets (): Asset[],
   getAddressBalance (address: string, options?: AddressBalanceOptions): Promise<BigNumber>

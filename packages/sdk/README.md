@@ -4,7 +4,7 @@ Digital payment for the masses. Manage crypto funds with ease.
 
 ## API
 
-### `loadSDK(keyStore: KeyStore, implementations: Implementation[], { requestPassword: Function }): SdkInstance`
+### `loadSDK(keyStore: KeyStore, platforms: Platform[], { requestPassword: Function }): SdkInstance`
 
 Initialize an SDK instance.
 
@@ -24,7 +24,7 @@ Read-only array of assets supported by the implementations that were passed to `
 ### Asset
 ### Wallet
 
-See the [Implementation API readme](../implementation-api-spec/README.md#types).
+See the [Platform API readme](../platform-api-spec/README.md#types).
 
 
 ## To Do

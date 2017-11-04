@@ -1,6 +1,6 @@
 import { Big as BigNumber } from 'big.js'
 import { Keypair } from 'stellar-sdk'
-import { Asset, Wallet } from '@wallet/implementation-api'
+import { Asset, Wallet } from '@wallet/platform-api'
 import { getHorizonServer, useNetwork } from './horizon'
 
 export type PublicWalletData = {

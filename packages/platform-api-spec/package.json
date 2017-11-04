@@ -1,0 +1,11 @@
+{
+  "name": "@wallet/platform-api",
+  "version": "0.1.0",
+  "types": "./index.d.ts",
+  "scripts": {
+    "test": "echo 'No tests for API spec, but this is ok.'"
+  },
+  "devDependencies": {
+    "@types/big.js": "^4.0.0"
+  }
+}

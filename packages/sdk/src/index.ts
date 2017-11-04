@@ -1,6 +1,6 @@
 import { Big as BigNumber } from 'big.js'
 import { flatMap } from 'lodash'
-import { Asset, Implementation, KeyStore, Wallet, AddressBalanceOptions } from '@wallet/implementation-api'
+import { Asset, KeyStore, Platform, Wallet, AddressBalanceOptions } from '@wallet/platform-api'
 
 export type RequestPassword = (wallet: Wallet) => Promise<string>
 export type LoadSDKOptions = {
@@ -11,10 +11,10 @@ const defaultRequestPassword = async () => {
   throw new Error('No requestPassword() function passed to loadSDK().')
 }
 
-export function loadSDK (keyStore: KeyStore, implementations: Implementation[], { requestPassword = defaultRequestPassword }: LoadSDKOptions = {}) {
-  const assets = flatMap(implementations, implementation => implementation.getAssets())
-  const getImplementation = (assetID: string) => findImplementation(implementations, assetID)
-  const openWalletByID = async (walletID: string) => openWallet({ keyStore, implementations, requestPassword }, walletID)
+export function loadSDK (keyStore: KeyStore, platforms: Platform[], { requestPassword = defaultRequestPassword }: LoadSDKOptions = {}) {
+  const assets = flatMap(platforms, implementation => implementation.getAssets())
+  const getPlatform = (assetID: string) => findPlatform(platforms, assetID)
+  const openWalletByID = async (walletID: string) => openWallet({ keyStore, platforms, requestPassword }, walletID)
 
   return {
     get assets (): Asset[] {
@@ -24,31 +24,31 @@ export function loadSDK (keyStore: KeyStore, implementations: Implementation[], 
       return keyStore.getWalletIDs()
     },
     async getAddressBalance (asset: string, address: string, options: AddressBalanceOptions = {}): Promise<BigNumber> {
-      const implementation = getImplementation(asset)
-      return implementation.getAddressBalance(address, options)
+      const platform = getPlatform(asset)
+      return platform.getAddressBalance(address, options)
     },
     async getWalletBalance (walletID: string): Promise<BigNumber> {
-      const { implementation, wallet } = await openWalletByID(walletID)
-      return implementation.getWalletBalance(wallet)
+      const { platform, wallet } = await openWalletByID(walletID)
+      return platform.getWalletBalance(wallet)
     }
   }
 }
 
 async function openWallet (
-  { keyStore, implementations, requestPassword }: { keyStore: KeyStore, implementations: Implementation[], requestPassword: RequestPassword },
+  { keyStore, platforms, requestPassword }: { keyStore: KeyStore, platforms: Platform[], requestPassword: RequestPassword },
   walletID: string
-): Promise<{ implementation: Implementation, wallet: Wallet }> {
+): Promise<{ platform: Platform, wallet: Wallet }> {
   const publicData = await keyStore.readWalletPublicData(walletID)
 
   if (!publicData.asset) throw new Error(`Wallet ${walletID} in key store is lacking the 'asset' property in public data.`)
   const assetID = publicData.asset
 
-  const implementation = findImplementation(implementations, assetID)
-  const asset = implementation.getAssets().find(asset => asset.id === assetID || asset.aliases.some(alias => alias === assetID))
-  if (!asset) throw new Error(`Implementation (${implementation.getAssets().map(asset => asset.id).join(', ')}) does not support asset ${assetID}.`)
+  const platform = findPlatform(platforms, assetID)
+  const asset = platform.getAssets().find(asset => asset.id === assetID || asset.aliases.some(alias => alias === assetID))
+  if (!asset) throw new Error(`Platform (${platform.getAssets().map(asset => asset.id).join(', ')}) does not support asset ${assetID}.`)
 
   const wallet = createWalletInstance({ keyStore, requestPassword }, walletID, asset)
-  return { implementation, wallet }
+  return { platform, wallet }
 }
 
 function createWalletInstance (
@@ -60,33 +60,33 @@ function createWalletInstance (
     asset,
     async readPrivate (): Promise<any> {
       const privateData = await keyStore.readWallet(walletID, await requestPassword(wallet))
-      return privateData.impl
+      return privateData.platform
     },
     async savePrivate (data: any): Promise<void> {
       const password = await requestPassword(wallet)
       const privateData = await keyStore.readWallet(walletID, password)
-      return keyStore.saveWallet(walletID, password, { ...privateData, impl: data })
+      return keyStore.saveWallet(walletID, password, { ...privateData, platform: data })
     },
     async readPublic (): Promise<any> {
       const publicData = await keyStore.readWalletPublicData(walletID)
-      return publicData.impl
+      return publicData.platform
     },
     async savePublic (data: any): Promise<void> {
       const publicData = await keyStore.readWalletPublicData(walletID)
-      return keyStore.saveWalletPublicData(walletID, { ...publicData, impl: data })
+      return keyStore.saveWalletPublicData(walletID, { ...publicData, platform: data })
     }
   }
   return wallet
 }
 
-function findImplementation (implementations: Implementation[], assetID: string): Implementation {
+function findPlatform (platforms: Platform[], assetID: string): Platform {
   const assetByIdOrAlias = (asset: Asset) => asset.id === assetID || asset.aliases.some(alias => alias === assetID)
-  const implementationByAssetID = (impl: Implementation) => impl.getAssets().some(assetByIdOrAlias)
+  const platformByAssetID = (platform: Platform) => platform.getAssets().some(assetByIdOrAlias)
 
-  const implementation = implementations.find(implementationByAssetID)
-  if (implementation) {
-    return implementation
+  const platform = platforms.find(platformByAssetID)
+  if (platform) {
+    return platform
   } else {
-    throw new Error(`Unhandled asset: ${assetID}. No matching implementation found.`)
+    throw new Error(`Unhandled asset: ${assetID}. No matching platform found.`)
   }
 }
