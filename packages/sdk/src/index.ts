@@ -1,6 +1,6 @@
 import { Big as BigNumber } from 'big.js'
 import { flatMap } from 'lodash'
-import { Asset, Platform, Wallet, AddressBalanceOptions } from '@wallet/platform-api'
+import { Asset, Platform, Wallet, AddressBalanceOptions, InitWalletOptions } from '@wallet/platform-api'
 
 export type KeyStore = {
   getWalletIDs (): string[],
@@ -24,8 +24,9 @@ export type LedgerAPI = {
 }
 
 export type WalletsAPI = {
-  addWallet (id: string, asset: Asset, privateKey: string, options?: object): Promise<Wallet>,
-  createWallet (id: string, asset: Asset, options?: object): Promise<Wallet>,
+  addWallet (id: string, asset: Asset, privateKey: string, password: string, options?: object): Promise<Wallet>,
+  createWallet (id: string, asset: Asset, password: string, options?: object): Promise<Wallet>,
+  getWallet (id: string): Promise<Wallet>,
   getWalletIDs (): string[],
   removeWallet (id: string): Promise<void>
 }
@@ -77,7 +78,7 @@ export function loadSDK (keyStore: KeyStore, platforms: Platform[], { requestPas
     },
     getAsset,
     ledger: createLedgerAPI(getPlatform, openWalletByID),
-    wallets: createWalletsAPI(keyStore, getPlatform, instantiateWallet)
+    wallets: createWalletsAPI(keyStore, getPlatform, openWalletByID)
   }
 }
 
@@ -100,23 +101,32 @@ function createLedgerAPI (
 function createWalletsAPI (
   keyStore: KeyStore,
   getPlatform: (asset: Asset) => Platform,
-  instantiateWallet: (asset: Asset, walletID: string) => Wallet
+  openWalletByID: (walletID: string) => Promise<{ platform: Platform, wallet: Wallet }>
 ): WalletsAPI {
   const walletsAPI = {
     getWalletIDs () {
       return keyStore.getWalletIDs()
     },
-    async addWallet (id: string, asset: Asset, privateKey: string, options: object = {}) {
+    async addWallet (id: string, asset: Asset, privateKey: string, password: string, options: InitWalletOptions = {}) {
       const platform = getPlatform(asset)
-      const wallet = instantiateWallet(asset, id)
-      await keyStore.saveWalletPublicData(id, { asset: asset.id })
+      const requestPassword = async () => password
+      const wallet = createWalletInstance({ keyStore, requestPassword }, id, asset)
       await platform.initWallet(wallet, privateKey, options)
+      await keyStore.saveWalletPublicData(id, {
+        ...(await keyStore.readWalletPublicData(id)),
+        asset: asset.id,
+        testnet: options.testnet || false
+      })
       return wallet
     },
-    async createWallet (id: string, asset: Asset, options: object = {}) {
+    async createWallet (id: string, asset: Asset, password: string, options: InitWalletOptions = {}) {
       const platform = getPlatform(asset)
       const privateKey = await platform.createPrivateKey()
-      return walletsAPI.addWallet(id, asset, privateKey, options)
+      return walletsAPI.addWallet(id, asset, privateKey, password, options)
+    },
+    async getWallet (id: string) {
+      const { wallet } = await openWalletByID(id)
+      return wallet
     },
     async removeWallet (walletID: string) {
       await keyStore.removeWallet(walletID)
@@ -130,15 +140,21 @@ function createWalletInstance (
   walletID: string,
   asset: Asset
 ): Wallet {
+  const walletInitialized = () => keyStore.getWalletIDs().includes(walletID)
+
   const wallet = {
     asset,
+    async getOptions (): Promise<InitWalletOptions> {
+      const publicData = await keyStore.readWalletPublicData(walletID)
+      return publicData.testnet || false
+    },
     async readPrivate (): Promise<any> {
       const privateData = await keyStore.readWallet(walletID, await requestPassword(wallet))
       return privateData.platform
     },
     async savePrivate (data: any): Promise<void> {
       const password = await requestPassword(wallet)
-      const privateData = await keyStore.readWallet(walletID, password)
+      const privateData = walletInitialized() ? await keyStore.readWallet(walletID, password) : {}
       return keyStore.saveWallet(walletID, password, { ...privateData, platform: data })
     },
     async readPublic (): Promise<any> {
@@ -146,7 +162,7 @@ function createWalletInstance (
       return publicData.platform
     },
     async savePublic (data: any): Promise<void> {
-      const publicData = await keyStore.readWalletPublicData(walletID)
+      const publicData = walletInitialized() ? await keyStore.readWalletPublicData(walletID) : {}
       return keyStore.saveWalletPublicData(walletID, { ...publicData, platform: data })
     }
   }

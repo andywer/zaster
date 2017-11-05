@@ -19,8 +19,9 @@ export declare type LedgerAPI = {
     getWalletBalance(walletID: string): Promise<BigNumber>;
 };
 export declare type WalletsAPI = {
-    addWallet(id: string, asset: Asset, privateKey: string, options?: object): Promise<Wallet>;
-    createWallet(id: string, asset: Asset, options?: object): Promise<Wallet>;
+    addWallet(id: string, asset: Asset, privateKey: string, password: string, options?: object): Promise<Wallet>;
+    createWallet(id: string, asset: Asset, password: string, options?: object): Promise<Wallet>;
+    getWallet(id: string): Promise<Wallet>;
     getWalletIDs(): string[];
     removeWallet(id: string): Promise<void>;
 };

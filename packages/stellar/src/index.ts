@@ -4,8 +4,7 @@ import { Asset, Wallet, InitWalletOptions } from '@wallet/platform-api'
 import { getHorizonServer, useNetwork } from './horizon'
 
 export type PublicWalletData = {
-  publicKey: string,
-  testnet: boolean
+  publicKey: string
 }
 
 export type PrivateWalletData = {
@@ -29,11 +28,10 @@ export async function createPrivateKey () {
 }
 
 export async function initWallet (wallet: StellarWallet, privateKey: string, options: InitWalletOptions = {}) {
-  const { testnet = false } = options
   const keypair = Keypair.fromSecret(privateKey)
 
   await wallet.savePrivate({ privateKey })
-  await wallet.savePublic({ publicKey: keypair.publicKey(), testnet })
+  await wallet.savePublic({ publicKey: keypair.publicKey() })
 }
 
 export type AddressBalanceOptions = { testnet?: boolean }
@@ -50,7 +48,8 @@ export async function getAddressBalance (address: string, options: AddressBalanc
 }
 
 export async function getWalletBalance (wallet: StellarWallet): Promise<BigNumber> {
-  const { publicKey, testnet }: PublicWalletData = await wallet.readPublic()
+  const { publicKey }: PublicWalletData = await wallet.readPublic()
+  const { testnet } = await wallet.getOptions()
 
   return getAddressBalance(publicKey, { testnet })
 }

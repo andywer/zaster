@@ -2,7 +2,6 @@ import { Big as BigNumber } from 'big.js';
 import { Asset, Wallet, InitWalletOptions } from '@wallet/platform-api';
 export declare type PublicWalletData = {
     publicKey: string;
-    testnet: boolean;
 };
 export declare type PrivateWalletData = {
     privateKey: string;
