@@ -62,13 +62,18 @@ import BigNumber = require('big.js')
 ```typescript
 type Wallet = {
   asset: Asset,
-  readPrivate: () => Promise<WalletData>,
-  savePrivate: (data: WalletData) => Promise<void>,
-  readPublic: () => Promise<WalletData>,
-  savePublic: (data: WalletData) => Promise<void>
+  readPrivate (): Promise<WalletData>,
+  savePrivate (data: WalletData): Promise<void>,
+  readPublic (): Promise<WalletData>,
+  savePublic (data: WalletData): Promise<void>,
+  getOptions (): Promise<WalletOptions>
 }
 
 type WalletData = any
+
+type WalletOptions = {
+  testnet?: boolean
+}
 ```
 
 A wallet may contain private and public data. Private data will be saved in an encrypted way using a user-supplied password, whereas the public data will be readable without any authentication. You don't need to care for asking the user for a password here; it will automatically be cared for on `readPrivate()`/`savePrivate()` calls.
