@@ -45,10 +45,11 @@ test('getWalletBalance() can retrieve a testnet balance', async t => {
   const address = 'GBPBFWVBADSESGADWEGC7SGTHE3535FWK4BS6UW3WMHX26PHGIH5NF4W'
   const wallet = {
     asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
-    readPublic: async () => ({ publicKey: address, testnet: true }),
-    readPrivate: async () => ({}),
+    readPublic: async () => ({ publicKey: address }),
+    readPrivate: async () => ({ privateKey: '' }),
     savePublic: async () => {},
-    savePrivate: async () => {}
+    savePrivate: async () => {},
+    getOptions: async () => ({ testnet: true })
   }
 
   const restApiResponse: any = await got(`https://horizon-testnet.stellar.org/accounts/${address}`, { json: true })
@@ -64,10 +65,11 @@ test('getWalletBalance() can retrieve a mainnet balance', async t => {
   const address = 'GDOOMATUOJPLIQMQ4WWXBEWR5UMKJW65CFKJJW3LV7XZYIEQHZPDQCBI'
   const wallet = {
     asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
-    readPublic: async () => ({ publicKey: address, testnet: false }),
-    readPrivate: async () => ({}),
+    readPublic: async () => ({ publicKey: address }),
+    readPrivate: async () => ({ privateKey: '' }),
     savePublic: async () => {},
-    savePrivate: async () => {}
+    savePrivate: async () => {},
+    getOptions: async () => ({ testnet: false })
   }
 
   const restApiResponse: any = await got(`https://horizon.stellar.org/accounts/${address}`, { json: true })
