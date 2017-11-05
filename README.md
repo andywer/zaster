@@ -2,6 +2,10 @@
 
 Headless multi-blockchain wallet. Build your own blockchain product based on the SDK or use the command line interface to manage your crypto funds.
 
+<h4 align="center">
+  ⚠️ <b>Under construction</b> ⚠️
+</h4>
+
 
 ## Definition
 
