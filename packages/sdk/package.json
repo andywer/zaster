@@ -12,6 +12,7 @@
   "scripts": {
     "build": "tsc",
     "test": "tslint --project . 'src/**/*.ts' -e '**/*.d.ts'",
+    "watch": "npm run build -- --watch",
     "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {

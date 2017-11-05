@@ -5,6 +5,7 @@
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
+    "watch": "lerna run --parallel watch",
     "postinstall": "lerna bootstrap && link-parent-bin"
   },
   "devDependencies": {
