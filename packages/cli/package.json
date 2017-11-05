@@ -22,7 +22,6 @@
     "chalk": "^2.1.0",
     "commander": "^2.11.0",
     "input": "^1.0.1",
-    "key-store": "^0.1.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {

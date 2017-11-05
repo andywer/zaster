@@ -1,10 +1,9 @@
 import chalk from 'chalk'
 import program from 'commander'
-import { loadOrCreateStore } from 'key-store'
 import { padEnd } from 'lodash'
 import pkg from '../../package.json'
-import { keyStorePath } from '../config'
 import { handleCLIError } from '../errors'
+import { initSDK } from '../sdk'
 
 program
   .name('wallet')
@@ -17,14 +16,15 @@ printWallets()
   .catch(handleCLIError)
 
 async function printWallets () {
-  const store = await loadOrCreateStore(keyStorePath)
-  const walletIDs = store.getWalletIDs()
+  const sdk = await initSDK()
+  const walletIDs = sdk.wallets.getWalletIDs()
 
   if (walletIDs.length === 0) {
     console.log('(No wallets)')
   } else {
     for (const walletID of walletIDs) {
-      const metadata = await store.readWalletPublicData(walletID)
+      const wallet = await sdk.wallets.getWallet(walletID)
+      const metadata = await getWalletMetadata(wallet)
       const formattedWalletID = padEnd(walletID, 16)
       const formattedMetadata = chalk.grey(formatMetadata(metadata))
       console.log(`  ${formattedWalletID}\t${formattedMetadata}`)
@@ -32,10 +32,18 @@ async function printWallets () {
   }
 }
 
-function formatMetadata (metadata) {
+async function getWalletMetadata (wallet) {
+  const walletOptions = await wallet.getOptions()
+  return {
+    asset: wallet.asset.id,
+    testnet: walletOptions.testnet || false
+  }
+}
+
+function formatMetadata ({ asset, testnet }) {
   const metaPropStrings = [
-    `Asset: ${metadata.asset}`,
-    metadata.testnet ? 'Testnet' : ''
+    `Asset: ${asset}`,
+    testnet ? 'Testnet' : ''
   ]
   const combinedString = metaPropStrings.filter(string => Boolean(string)).join(', ')
   return `[ ${combinedString} ]`

@@ -1,8 +1,7 @@
 import program from 'commander'
-import { loadStore } from 'key-store'
 import pkg from '../../package.json'
-import { keyStorePath } from '../config'
 import { newInputError, handleCLIError } from '../errors'
+import { initSDK } from '../sdk'
 
 program
   .name('wallet')
@@ -16,15 +15,14 @@ removeWallet(program)
 
 async function removeWallet ({ args }) {
   const [ walletId ] = args
+  const sdk = await initSDK()
 
   if (args.length !== 1) throw newInputError(`Expected one argument: The wallet ID. Got ${args.length}.`)
 
-  const store = await loadStore(keyStorePath)
-
-  const presentWalletIDs = store.getWalletIDs()
+  const presentWalletIDs = sdk.wallets.getWalletIDs()
   if (!presentWalletIDs.includes(walletId)) throw newInputError(`Wallet '${walletId}' not found.`)
 
-  await store.removeWallet(walletId)
+  await sdk.wallets.removeWallet(walletId)
 
   console.log(`Wallet removed: ${walletId}`)
 }

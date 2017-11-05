@@ -1,10 +1,8 @@
 import program from 'commander'
 import input from 'input'
-import { loadOrCreateStore } from 'key-store'
 import pkg from '../../package.json'
-import { keyStorePath } from '../config'
-import { init as initImplementations } from '../implementations'
 import { newInputError, handleCLIError } from '../errors'
+import { initSDK } from '../sdk'
 
 program
   .name('wallet')
@@ -22,17 +20,16 @@ addWallet(program)
 
 async function addWallet ({ args, ...options }) {
   const [ walletId ] = args
-  const { asset, privateKey, testnet = false } = options
-  const { assets: availableAssets } = initImplementations()
+  const { asset: assetID, privateKey, testnet = false } = options
+  const sdk = await initSDK()
 
   if (args.length !== 1) throw newInputError(`Expected one argument: The wallet ID. Got ${args.length}.`)
-  if (!asset) throw newInputError(`No asset passed. Use --asset.`)
-  if (!availableAssets.find(availableAsset => availableAsset.id === asset)) throw newInputError(`Unknown asset: ${asset}`)
+  if (!assetID) throw newInputError(`No asset passed. Use --asset.`)
+  if (!sdk.assets.find(availableAsset => availableAsset.id === assetID)) throw newInputError(`Unknown asset: ${assetID}`)
   if (!privateKey) throw newInputError(`No private key passed. Use --private-key.`)
 
-  const store = await loadOrCreateStore(keyStorePath)
-
-  const presentWalletIDs = store.getWalletIDs()
+  const asset = sdk.getAsset(assetID)
+  const presentWalletIDs = sdk.wallets.getWalletIDs()
   if (presentWalletIDs.includes(walletId)) throw newInputError(`Wallet '${walletId}' exists already.`)
 
   // TODO: Let network implementation do a sanity check on the private key
@@ -40,8 +37,7 @@ async function addWallet ({ args, ...options }) {
   const password = await readPassword({ repeat: options.passwordRepeat })
   // TODO: Warn if password is insecure
 
-  await store.saveWallet(walletId, password, { privateKey })
-  await store.saveWalletPublicData(walletId, { asset, testnet })
+  await sdk.wallets.addWallet(walletId, asset, privateKey, password, { testnet })
 
   if (testnet) {
     console.log(`Wallet added: ${walletId}`)
