@@ -51,5 +51,11 @@ export async function getWalletBalance (wallet: StellarWallet): Promise<BigNumbe
   const { publicKey }: PublicWalletData = await wallet.readPublic()
   const { testnet } = await wallet.getOptions()
 
-  return getAddressBalance(publicKey, { testnet })
+  try {
+    const balance = await getAddressBalance(publicKey, { testnet })
+    return balance
+  } catch (error) {
+    const reason = typeof error.message !== 'object' ? error.message : `${error.message.status} ${error.message.title} (${error.message.type})\n${error.message.detail}`
+    throw new Error(`Cannot not get balance for ${publicKey}: ${reason}`)
+  }
 }

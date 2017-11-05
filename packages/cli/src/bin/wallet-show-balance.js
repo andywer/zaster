@@ -26,15 +26,12 @@ async function showBalance ({ args, testnet = false }) {
     const balance = await sdk.ledger.getAddressBalance(asset, address, { testnet })
     console.log(balance.toString())
   } else {
-    // TODO
-    /* Not functional yet:
     const walletID = arg
-    const walletIDs = sdk.getWalletIDs()
+    const walletIDs = sdk.wallets.getWalletIDs()
 
     if (!walletIDs.includes(walletID)) throw newInputError(`Wallet not found: ${walletID}`)
 
-    const balance = await sdk.getWalletBalance(walletID)
+    const balance = await sdk.ledger.getWalletBalance(walletID)
     console.log(balance.toString())
-    */
   }
 }

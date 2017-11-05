@@ -146,7 +146,10 @@ function createWalletInstance (
     asset,
     async getOptions (): Promise<InitWalletOptions> {
       const publicData = await keyStore.readWalletPublicData(walletID)
-      return publicData.testnet || false
+      const { testnet = false } = publicData
+      return {
+        testnet
+      }
     },
     async readPrivate (): Promise<any> {
       const privateData = await keyStore.readWallet(walletID, await requestPassword(wallet))
