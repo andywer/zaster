@@ -1,4 +1,6 @@
 # Project Zaster
+[![Build Status](https://travis-ci.org/andywer/zaster.svg?branch=master)](https://travis-ci.org/andywer/key-store)
+[![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 Headless multi-blockchain wallet. Build your own blockchain product based on the SDK or use the command line interface to manage your crypto funds.
 
