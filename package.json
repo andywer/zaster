@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "lerna run build",
+    "pretest": "npm run build",
     "test": "lerna run test",
     "watch": "lerna run --parallel watch",
     "postinstall": "lerna bootstrap && link-parent-bin"
