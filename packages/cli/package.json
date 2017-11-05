@@ -12,8 +12,9 @@
   },
   "scripts": {
     "build": "babel --out-dir lib/ src/",
-    "pretest": "standard src/**/*.js",
+    "pretest": "npm run build",
     "test": "ava",
+    "posttest": "standard src/**/*.js",
     "watch": "npm run build -- --watch",
     "prepublishOnly": "npm run build && npm test"
   },
