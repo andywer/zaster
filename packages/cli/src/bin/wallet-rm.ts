@@ -1,7 +1,8 @@
-import program from 'commander'
-import pkg from '../../package.json'
+import program = require('commander')
 import { newInputError, handleCLIError } from '../errors'
 import { initSDK } from '../sdk'
+
+const pkg = require('../../package.json')
 
 program
   .name('wallet')

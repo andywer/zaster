@@ -7,8 +7,11 @@
     "lib": ["es2015", "es2016", "es2017"],
     "strict": true,
     "sourceMap": true,
-    "declaration": true,
-    "outDir": "lib/"
+    "outDir": "lib/",
+    "baseUrl": "./",
+    "paths": {
+      "big.js": ["./node_modules/@types/big.js"]
+    }
   },
   "include": [
     "src/bin/*.ts"

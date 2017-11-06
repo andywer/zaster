@@ -1,11 +1,11 @@
-import chalk from 'chalk'
+import * as chalk from 'chalk'
 
-export function newInputError (message) {
+export function newInputError (message: string) {
   return Object.assign(new Error(message), { type: 'InputError' })
 }
 
-export function isInputError (error) {
-  return error instanceof Error && error.type === 'InputError'
+export function isInputError (error: any) {
+  return error instanceof Error && error['type'] === 'InputError'
 }
 
 export function handleCLIError (error) {

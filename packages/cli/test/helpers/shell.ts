@@ -1,7 +1,7 @@
-import execa from 'execa'
-import path from 'path'
-import pkg from '../../package.json'
+import * as path from 'path'
+import execa = require('execa')
 
+const pkg = require('../../package.json')
 const walletToolPath = path.join(__dirname, '..', '..', pkg.bin.wallet)
 
 export default function shell (command, options = {}) {

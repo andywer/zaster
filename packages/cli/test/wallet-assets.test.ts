@@ -1,5 +1,5 @@
 import test from 'ava'
-import stripAnsi from 'strip-ansi'
+import stripAnsi = require('strip-ansi')
 import shell from './helpers/shell'
 
 test('wallet-assets shows supported assets', async t => {
