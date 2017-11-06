@@ -1,8 +1,8 @@
-import chalk from 'chalk'
 import program from 'commander'
 import { padEnd, sortBy } from 'lodash'
 import pkg from '../../package.json'
 import { handleCLIError } from '../errors'
+import { asset as formatAsset, grey } from '../formats'
 import { initSDK } from '../sdk'
 
 program
@@ -20,10 +20,10 @@ async function printAvailableAssets () {
 
   const formatAliases = aliases => {
     if (aliases.length === 0) {
-      return chalk.grey('No aliases')
+      return grey('No aliases')
     } else {
-      const formattedAliases = sortBy(aliases).map(alias => chalk.blue(alias)).join(', ')
-      return `${chalk.grey('Aliases:')} ${formattedAliases}`
+      const formattedAliases = sortBy(aliases).map(alias => formatAsset(alias)).join(', ')
+      return `${grey('Aliases:')} ${formattedAliases}`
     }
   }
 
@@ -31,7 +31,7 @@ async function printAvailableAssets () {
   console.log('')
 
   for (const asset of sdk.assets) {
-    console.log(`  ${chalk.blue(padEnd(asset.id, 4))}\t${chalk.grey(asset.name)}`)
+    console.log(`  ${formatAsset(padEnd(asset.id, 4))}\t${grey(asset.name)}`)
     console.log(`  ${formatAliases(asset.aliases)}`)
     console.log('')
   }
