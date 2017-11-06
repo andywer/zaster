@@ -2,6 +2,9 @@
 
 Digital payment, as simple as Git. CLI tool of the @wallet library.
 
+**Attention: The private keys are stored in a truly secure way (AES-256 encryption). If you loose your password you will not be able to recover the keys! So please make sure to store a backup of your private keys in a safe place.**
+
+
 ## Usage
 
 ```
