@@ -11,10 +11,10 @@
     "node": ">= 6"
   },
   "scripts": {
-    "build": "babel --out-dir lib/ src/",
+    "build": "tsc",
     "pretest": "npm run build",
-    "test": "ava",
-    "posttest": "standard src/**/*.js",
+    "test": "ava-ts",
+    "posttest": "tslint --project . 'src/**/*.ts' -e '**/*.d.ts'",
     "watch": "npm run build -- --watch",
     "prepublishOnly": "npm run build && npm test"
   },
@@ -27,6 +27,12 @@
     "lodash": "^4.17.4"
   },
   "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/commander": "^2.11.0",
+    "@types/execa": "^0.7.2",
+    "@types/got": "^7.1.4",
+    "@types/lodash": "^4.14.82",
+    "@types/node": "^8.0.47",
     "execa": "^0.8.0",
     "got": "^7.1.0",
     "key-store": "^0.1.0",
