@@ -16,7 +16,7 @@ test('wallet-show-balance can show a stellar testnet address\' balance', async t
     { stdout, stderr }
   ] = await Promise.all([
     got(`https://horizon-testnet.stellar.org/accounts/${address}`, { json: true }),
-    shell(`wallet show balance --testnet XLM:${address}`)
+    shell(`wallet show balance --raw --testnet XLM:${address}`)
   ])
   const restApiBalance = getAccountBalance(restApiResponse.body)
 
@@ -38,7 +38,7 @@ test('wallet-show-balance can show a wallet\'s balance', async t => {
     { stdout, stderr }
   ] = await Promise.all([
     got(`https://horizon-testnet.stellar.org/accounts/${address}`, { json: true }),
-    shell(`wallet show balance sample-wallet`, { env })
+    shell(`wallet show balance sample-wallet --raw`, { env })
   ])
   const restApiBalance = getAccountBalance(restApiResponse.body)
 

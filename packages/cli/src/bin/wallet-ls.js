@@ -1,8 +1,8 @@
-import chalk from 'chalk'
 import program from 'commander'
 import { padEnd } from 'lodash'
 import pkg from '../../package.json'
 import { handleCLIError } from '../errors'
+import { grey } from '../formats'
 import { initSDK } from '../sdk'
 
 program
@@ -26,7 +26,7 @@ async function printWallets () {
       const wallet = await sdk.wallets.getWallet(walletID)
       const metadata = await getWalletMetadata(wallet)
       const formattedWalletID = padEnd(walletID, 16)
-      const formattedMetadata = chalk.grey(formatMetadata(metadata))
+      const formattedMetadata = grey(formatMetadata(metadata))
       console.log(`  ${formattedWalletID}\t${formattedMetadata}`)
     }
   }
