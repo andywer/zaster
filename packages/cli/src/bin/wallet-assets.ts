@@ -1,9 +1,10 @@
-import program from 'commander'
+import program = require('commander')
 import { padEnd, sortBy } from 'lodash'
-import pkg from '../../package.json'
 import { handleCLIError } from '../errors'
 import { asset as formatAsset, grey } from '../formats'
 import { initSDK } from '../sdk'
+
+const pkg = require('../../package.json')
 
 program
   .name('wallet')

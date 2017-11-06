@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import program from 'commander'
-import pkg from '../../package.json'
+import program = require('commander')
+
+const pkg = require('../../package.json')
 
 program
   .command('assets', 'List supported crypto coins.')

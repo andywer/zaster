@@ -1,9 +1,10 @@
-import program from 'commander'
+import program = require('commander')
 import { padEnd } from 'lodash'
-import pkg from '../../package.json'
 import { handleCLIError } from '../errors'
 import { grey } from '../formats'
 import { initSDK } from '../sdk'
+
+const pkg = require('../../package.json')
 
 program
   .name('wallet')
@@ -45,6 +46,6 @@ function formatMetadata ({ asset, testnet }) {
     `Asset: ${asset}`,
     testnet ? 'Testnet' : ''
   ]
-  const combinedString = metaPropStrings.filter(string => Boolean(string)).join(', ')
+  const combinedString = metaPropStrings.filter(metaString => Boolean(metaString)).join(', ')
   return `[ ${combinedString} ]`
 }

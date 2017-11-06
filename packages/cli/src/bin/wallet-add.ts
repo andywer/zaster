@@ -1,8 +1,9 @@
-import program from 'commander'
+import program = require('commander')
 import input from 'input'
-import pkg from '../../package.json'
 import { newInputError, handleCLIError } from '../errors'
 import { initSDK } from '../sdk'
+
+const pkg = require('../../package.json')
 
 program
   .name('wallet')
@@ -29,6 +30,8 @@ async function addWallet ({ args, ...options }) {
   if (!privateKey) throw newInputError(`No private key passed. Use --private-key.`)
 
   const asset = sdk.getAsset(assetID)
+  if (!asset) throw newInputError(`Unknown asset: ${assetID}`)
+
   const presentWalletIDs = sdk.wallets.getWalletIDs()
   if (presentWalletIDs.includes(walletId)) throw newInputError(`Wallet '${walletId}' exists already.`)
 

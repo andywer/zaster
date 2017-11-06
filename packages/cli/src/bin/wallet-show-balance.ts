@@ -1,8 +1,9 @@
-import program from 'commander'
-import pkg from '../../package.json'
+import program = require('commander')
 import { newInputError, handleCLIError } from '../errors'
 import { balance as formatBalance, grey } from '../formats'
 import { initSDK } from '../sdk'
+
+const pkg = require('../../package.json')
 
 program
   .name('wallet show')
@@ -25,6 +26,8 @@ async function showBalance ({ args, raw = false, testnet = false }) {
   if (arg.indexOf(':') > -1) {
     const [ assetID, address ] = arg.split(':')
     const asset = sdk.getAsset(assetID)
+    if (!asset) throw newInputError(`Unknown asset: ${assetID}`)
+
     const balance = await sdk.ledger.getAddressBalance(asset, address, { testnet })
 
     if (raw) {

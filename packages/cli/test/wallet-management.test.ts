@@ -1,7 +1,7 @@
 import test from 'ava'
 import { loadStore } from 'key-store'
-import stripAnsi from 'strip-ansi'
-import temp from 'temp'
+import * as temp from 'temp'
+import stripAnsi = require('strip-ansi')
 import shell from './helpers/shell'
 
 temp.track()

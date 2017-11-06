@@ -1,6 +1,6 @@
 import test from 'ava'
-import got from 'got'
-import temp from 'temp'
+import * as temp from 'temp'
+import got = require('got')
 import shell from './helpers/shell'
 
 temp.track()
