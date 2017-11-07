@@ -1,4 +1,4 @@
-import * as chalk from 'chalk'
+import { error as formatError, grey } from './formats'
 
 export function newInputError (message: string) {
   return Object.assign(new Error(message), { type: 'InputError' })
@@ -10,13 +10,13 @@ export function isInputError (error: any) {
 
 export function handleCLIError (error) {
   if (isInputError(error)) {
-    console.error(chalk.red(error.message))
+    console.error(formatError(error.message))
   } else if (error.stack) {
     const [ messageLine, ...stackLines ] = error.stack.split('\n')
-    console.error(chalk.red(messageLine))
-    console.error(chalk.grey(stackLines.join('\n')))
+    console.error(formatError(messageLine))
+    console.error(grey(stackLines.join('\n')))
   } else {
-    console.error(chalk.red(error))
+    console.error(formatError(error))
   }
   process.exit(1)
 }
