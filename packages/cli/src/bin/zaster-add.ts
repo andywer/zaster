@@ -8,7 +8,7 @@ import { initSDK } from '../sdk'
 const pkg = require('../../package.json')
 
 program
-  .name('wallet')
+  .name('zaster')
   .usage('add <walletId> --asset <asset> --private-key <key> [--testnet]')
   .description('Add a wallet by private key.')
   .version(pkg.version)

@@ -7,7 +7,7 @@ import { initSDK } from '../sdk'
 const pkg = require('../../package.json')
 
 program
-  .name('wallet')
+  .name('zaster')
   .usage('ls')
   .description('List wallets.')
   .version(pkg.version)

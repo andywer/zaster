@@ -6,12 +6,12 @@ import shell from './helpers/shell'
 
 temp.track()
 
-test('wallet-add can add a wallet', async t => {
+test('zaster-add can add a wallet', async t => {
   const keyStorePath = temp.path()
   const env = { WALLET_STORE_PATH: keyStorePath }
   const input = 'samplePassword\n'
 
-  const { stdout, stderr } = await shell('wallet add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --no-password-repeat', { env, input })
+  const { stdout, stderr } = await shell('zaster add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --no-password-repeat', { env, input })
   t.is(stderr, '')
 
   const keyStore = await loadStore(keyStorePath)
@@ -32,12 +32,12 @@ test('wallet-add can add a wallet', async t => {
   t.snapshot(stripAnsi(stdout).trim())
 })
 
-test('wallet-add can add a testnet wallet', async t => {
+test('zaster-add can add a testnet wallet', async t => {
   const keyStorePath = temp.path()
   const env = { WALLET_STORE_PATH: keyStorePath }
   const input = 'samplePassword\nsamplePassword\n'
 
-  const { stdout, stderr } = await shell('wallet add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --testnet --no-password-repeat', { env, input })
+  const { stdout, stderr } = await shell('zaster add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --testnet --no-password-repeat', { env, input })
 
   const keyStore = await loadStore(keyStorePath)
   t.deepEqual(keyStore.getWalletIDs(), ['sample-wallet'])
@@ -55,25 +55,25 @@ test('wallet-add can add a testnet wallet', async t => {
   })
 })
 
-test('wallet-ls can list a previously added wallet', async t => {
+test('zaster-ls can list a previously added wallet', async t => {
   const keyStorePath = temp.path()
   const env = { WALLET_STORE_PATH: keyStorePath }
   const input = 'samplePassword\nsamplePassword\n'
 
-  await shell('wallet add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --no-password-repeat', { env, input })
-  const { stdout, stderr } = await shell('wallet ls', { env })
+  await shell('zaster add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --no-password-repeat', { env, input })
+  const { stdout, stderr } = await shell('zaster ls', { env })
 
   t.is(stderr, '')
   t.snapshot(stripAnsi(stdout).trim())
 })
 
-test('wallet-rm can remove a previously added wallet', async t => {
+test('zaster-rm can remove a previously added wallet', async t => {
   const keyStorePath = temp.path()
   const env = { WALLET_STORE_PATH: keyStorePath }
   const input = 'samplePassword\nsamplePassword\n'
 
-  await shell('wallet add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --testnet --no-password-repeat', { env, input })
-  const { stdout, stderr } = await shell('wallet rm sample-wallet', { env })
+  await shell('zaster add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --testnet --no-password-repeat', { env, input })
+  const { stdout, stderr } = await shell('zaster rm sample-wallet', { env })
   t.is(stderr, '')
 
   const keyStore = await loadStore(keyStorePath)
