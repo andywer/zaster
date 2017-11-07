@@ -15,3 +15,4 @@ export declare type AddressBalanceOptions = {
 };
 export declare function getAddressBalance(address: string, options?: AddressBalanceOptions): Promise<BigNumber>;
 export declare function getWalletBalance(wallet: StellarWallet): Promise<BigNumber>;
+export declare function getWalletAddress(wallet: StellarWallet): Promise<string>;

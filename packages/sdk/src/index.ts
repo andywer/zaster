@@ -20,7 +20,8 @@ export type SDK = {
 
 export type LedgerAPI = {
   getAddressBalance (asset: Asset, address: string, options?: AddressBalanceOptions): Promise<BigNumber>,
-  getWalletBalance (walletID: string): Promise<BigNumber>
+  getWalletBalance (walletID: string): Promise<BigNumber>,
+  getWalletAddress (walletID: string): Promise<string>
 }
 
 export type WalletsAPI = {
@@ -94,6 +95,10 @@ function createLedgerAPI (
     async getWalletBalance (walletID: string): Promise<BigNumber> {
       const { platform, wallet } = await openWalletByID(walletID)
       return platform.getWalletBalance(wallet)
+    },
+    async getWalletAddress (walletID: string): Promise<string> {
+      const { platform, wallet } = await openWalletByID(walletID)
+      return platform.getWalletAddress(wallet)
     }
   }
 }

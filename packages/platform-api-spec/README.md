@@ -27,6 +27,10 @@ type options = {
 
 Asynchronously retrieves the balance of a wallet. The value is always denominated in the asset's usually used unit (bitcoin, not satoshis; stellar lumens, not stroops, ...). This might be just a proxied call of `getAddressBalance()` or trigger some more complex logic, depending on the implementation.
 
+### `getWalletAddress(wallet: Wallet): Promise<string>`
+
+Asynchronously returns an address to receive payments for the given wallet.
+
 
 ## Types
 
