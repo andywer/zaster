@@ -23,6 +23,7 @@ $ wallet show balance <asset>:<address> [--testnet]
 $ wallet show transaction <walletID>:<txID>
 $ wallet show transaction <asset>:<txID>
 
+$ wallet address <walletID>
 $ wallet pay <walletID> -d|--destination <address> -a|--amount <amount> -m|--memo <description>
 
 $ wallet log <walletID> [--from-date <date>] [--to-date <date>]
