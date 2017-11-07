@@ -1,6 +1,8 @@
-import program = require('commander')
 import input from 'input'
+import program = require('commander')
+import dedent = require('dedent')
 import { newInputError, handleCLIError } from '../errors'
+import { green, grey } from '../formats'
 import { initSDK } from '../sdk'
 
 const pkg = require('../../package.json')
@@ -42,11 +44,20 @@ async function addWallet ({ args, ...options }) {
 
   await sdk.wallets.addWallet(walletId, asset, privateKey, password, { testnet })
 
-  if (testnet) {
-    console.log(`Wallet added: ${walletId}`)
-  } else {
-    console.log(`Testnet wallet added: ${walletId}`)
-  }
+  console.log('')
+  console.log(dedent`
+    ${green(`${testnet ? 'Testnet wallet' : 'Wallet'} added: ${walletId}`)}
+  `.trim())
+  console.log('')
+
+  console.log(grey(dedent`
+    Security note:
+
+    The private key has been saved to your local filesystem using a military-grade
+    encryption. If you loose your password you will not be able to recover the key!
+
+    Please make sure to store a backup of your private key in a safe place.
+  `.trim()))
 }
 
 async function readPassword ({ repeat = true }) {
