@@ -17,6 +17,7 @@ export declare type SDK = {
 export declare type LedgerAPI = {
     getAddressBalance(asset: Asset, address: string, options?: AddressBalanceOptions): Promise<BigNumber>;
     getWalletBalance(walletID: string): Promise<BigNumber>;
+    getWalletAddress(walletID: string): Promise<string>;
 };
 export declare type WalletsAPI = {
     addWallet(id: string, asset: Asset, privateKey: string, password: string, options?: object): Promise<Wallet>;

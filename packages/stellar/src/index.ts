@@ -59,3 +59,8 @@ export async function getWalletBalance (wallet: StellarWallet): Promise<BigNumbe
     throw new Error(`Cannot not get balance for ${publicKey}: ${reason}`)
   }
 }
+
+export async function getWalletAddress (wallet: StellarWallet): Promise<string> {
+  const { publicKey }: PublicWalletData = await wallet.readPublic()
+  return publicKey
+}
