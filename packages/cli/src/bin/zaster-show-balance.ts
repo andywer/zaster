@@ -6,7 +6,7 @@ import { initSDK } from '../sdk'
 const pkg = require('../../package.json')
 
 program
-  .name('wallet show')
+  .name('zaster show')
   .usage('balance <walletId> | <asset>:<address> [--testnet]')
   .description('Show the balance of a wallet or address.')
   .option('--raw', 'Output raw balance, without surrounding text.')

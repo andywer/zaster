@@ -5,7 +5,7 @@
   "license": "MIT",
   "author": "Andy Wermke (https://github.com/andywer)",
   "bin": {
-    "wallet": "lib/bin/wallet.js"
+    "wallet": "lib/bin/zaster.js"
   },
   "engines": {
     "node": ">= 6"

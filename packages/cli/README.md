@@ -1,6 +1,6 @@
-# @wallet CLI
+# Zaster CLI
 
-Digital payment, as simple as Git. CLI tool of the @wallet library.
+Digital payment, as simple as Git. CLI tool of project Zaster.
 
 **Attention: The private keys are stored in a truly secure way (AES-256 encryption). If you loose your password you will not be able to recover the keys! So please make sure to store a backup of your private keys in a safe place.**
 
@@ -10,47 +10,47 @@ Digital payment, as simple as Git. CLI tool of the @wallet library.
 ```
 # Features in Step I
 
-$ wallet add <walletId> --asset <asset> --private-key <key> [--testnet]
-$ wallet create <walletId> --asset <asset> [--testnet]
-$ wallet ls
-$ wallet rm <walletID>
-$ wallet backup <walletID>
+$ zaster add <walletId> --asset <asset> --private-key <key> [--testnet]
+$ zaster create <walletId> --asset <asset> [--testnet]
+$ zaster ls
+$ zaster rm <walletID>
+$ zaster backup <walletID>
 
-$ wallet assets
+$ zaster assets
 
-$ wallet show balance <walletID>
-$ wallet show balance <asset>:<address> [--testnet]
-$ wallet show transaction <walletID>:<txID>
-$ wallet show transaction <asset>:<txID>
+$ zaster show balance <walletID>
+$ zaster show balance <asset>:<address> [--testnet]
+$ zaster show transaction <walletID>:<txID>
+$ zaster show transaction <asset>:<txID>
 
-$ wallet address <walletID>
-$ wallet pay <walletID> -d|--destination <address> -a|--amount <amount> -m|--memo <description>
+$ zaster address <walletID>
+$ zaster pay <walletID> -d|--destination <address> -a|--amount <amount> -m|--memo <description>
 
-$ wallet log <walletID> [--from-date <date>] [--to-date <date>]
+$ zaster log <walletID> [--from-date <date>] [--to-date <date>]
 
-$ wallet merge-into <address>
+$ zaster merge-into <address>
 
-$ wallet stellar-create <walletId> <address> -a|--amount <amount>
+$ zaster stellar-create <walletId> <address> -a|--amount <amount>
 
 
 # Features in Step II
 
-$ wallet show rate <asset|fiat>/<asset|fiat> [--provider <provider>] [--live]
+$ zaster show rate <asset|fiat>/<asset|fiat> [--provider <provider>] [--live]
 
 
 # Features in Step III
 
-$ wallet topup <walletID> coinbase.com|<someProvider>
-$ wallet withdraw <walletID> coinbase.com|<someProvider>
+$ zaster topup <walletID> coinbase.com|<someProvider>
+$ zaster withdraw <walletID> coinbase.com|<someProvider>
 
 # a non-interactive mode would be cool, but not sure if its easily feasable
 
 
 # Features in Step IV
 
-$ wallet stellar-trustline ls <walletID>
-$ wallet stellar-trustline add <walletID> <trustline>
-$ wallet stellar-trustline rm <walletID> <trustline>
+$ zaster stellar-trustline ls <walletID>
+$ zaster stellar-trustline add <walletID> <trustline>
+$ zaster stellar-trustline rm <walletID> <trustline>
 ```
 
 
