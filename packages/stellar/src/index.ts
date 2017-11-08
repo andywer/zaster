@@ -37,14 +37,12 @@ export async function initWallet (wallet: StellarWallet, privateKey: string, opt
 export type AddressBalanceOptions = { testnet?: boolean }
 
 export async function getAddressBalance (address: string, options: AddressBalanceOptions = {}): Promise<BigNumber> {
-  const { testnet = false } = options
-  const horizon = getHorizonServer({ testnet })
-
-  useNetwork({ testnet })
-  const account = await horizon.loadAccount(address)
-
-  const balanceObject = account.balances.find((balance: any) => balance.asset_type === 'native')
-  return balanceObject ? BigNumber(balanceObject.balance) : BigNumber(0)
+  try {
+    const balance = getBalance(await retrieveAccountData(address, options))
+    return balance
+  } catch (error) {
+    throw wrapBalanceError(address, error)
+  }
 }
 
 export async function getWalletBalance (wallet: StellarWallet): Promise<BigNumber> {
@@ -52,15 +50,37 @@ export async function getWalletBalance (wallet: StellarWallet): Promise<BigNumbe
   const { testnet } = await wallet.getOptions()
 
   try {
-    const balance = await getAddressBalance(publicKey, { testnet })
+    const balance = getBalance(await retrieveAccountData(publicKey, { testnet }))
     return balance
   } catch (error) {
-    const reason = typeof error.message !== 'object' ? error.message : `${error.message.status} ${error.message.title} (${error.message.type})\n${error.message.detail}`
-    throw new Error(`Cannot not get balance for ${publicKey}: ${reason}`)
+    if (error.message && error.message.status === 404) {
+      // Account not found which means the account has not yet been activated yet (= just created), so return a zero balance
+      return BigNumber(0)
+    }
+    throw wrapBalanceError(publicKey, error)
   }
 }
 
 export async function getWalletAddress (wallet: StellarWallet): Promise<string> {
   const { publicKey }: PublicWalletData = await wallet.readPublic()
   return publicKey
+}
+
+function getBalance (accountData): BigNumber {
+  const balanceObject = accountData.balances.find((balance: any) => balance.asset_type === 'native')
+  return balanceObject ? BigNumber(balanceObject.balance) : BigNumber(0)
+}
+
+async function retrieveAccountData (address: string, options: AddressBalanceOptions = {}): Promise<BigNumber> {
+  const { testnet = false } = options
+  const horizon = getHorizonServer({ testnet })
+
+  useNetwork({ testnet })
+  return horizon.loadAccount(address)
+}
+
+function wrapBalanceError (publicKey: string, stellarError): Error {
+  const { message } = stellarError
+  const reason = typeof message !== 'object' ? message : `${message.status} ${message.title} (${message.type})\n${message.detail}`
+  return new Error(`Cannot not get balance for ${publicKey}: ${reason}`)
 }
