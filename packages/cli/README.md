@@ -26,14 +26,12 @@ $ zaster show transaction <asset>:<txID>
 $ zaster address <walletID>
 $ zaster pay <walletID> -d|--destination <address> -a|--amount <amount> -m|--memo <description>
 
-$ zaster log <walletID> [--from-date <date>] [--to-date <date>]
-
-$ zaster merge-into <address>
-
-$ zaster stellar-create <walletId> <address> -a|--amount <amount>
+$ zaster log <walletID> [--from-date <date>] [--to-date <date>] [--limit <maxCount>]
 
 
 # Features in Step II
+
+$ zaster stellar-activate <walletId> <address> -a|--amount <amount>
 
 $ zaster show rate <asset|fiat>/<asset|fiat> [--provider <provider>] [--live]
 
