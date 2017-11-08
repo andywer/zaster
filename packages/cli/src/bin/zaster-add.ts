@@ -1,9 +1,8 @@
-import input from 'input'
 import program = require('commander')
-import dedent = require('dedent')
 import { newInputError, handleCLIError } from '../errors'
-import { green, grey } from '../formats'
 import { initSDK } from '../sdk'
+import { walletAdded } from '../texts'
+import { readPassword } from '../tty'
 
 const pkg = require('../../package.json')
 
@@ -44,29 +43,5 @@ async function addWallet ({ args, ...options }) {
 
   await sdk.wallets.addWallet(walletId, asset, privateKey, password, { testnet })
 
-  console.log('')
-  console.log(dedent`
-    ${green(`${testnet ? 'Testnet wallet' : 'Wallet'} added: ${walletId}`)}
-  `.trim())
-  console.log('')
-
-  console.log(grey(dedent`
-    Security note:
-
-    The private key has been saved to your local filesystem using a military-grade
-    encryption. If you loose your password you will not be able to recover the key!
-
-    Please make sure to store a backup of your private key in a safe place.
-  `.trim()))
-}
-
-async function readPassword ({ repeat = true }) {
-  const password = await input.password(`Password: `)
-
-  if (repeat) {
-    const repeatedPassword = await input.password(`Repeat password: `)
-    if (repeatedPassword !== password) throw newInputError(`Passwords do not match.`)
-  }
-
-  return password
+  console.log('\n' + walletAdded(walletId, { testnet }))
 }
