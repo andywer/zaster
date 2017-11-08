@@ -1,5 +1,6 @@
 import test from 'ava'
 import { Big as BigNumber } from 'big.js'
+import { Keypair } from 'stellar-sdk'
 import got = require('got')
 import { createPrivateKey, getAssets, getAddressBalance, getWalletBalance } from '../src'
 
@@ -79,4 +80,19 @@ test('getWalletBalance() can retrieve a mainnet balance', async t => {
 
   t.true(implementationBalance.gt(BigNumber(20)))
   t.is(implementationBalance.toFixed(7), restApiBalance)
+})
+
+test('getWalletBalance() returns a zero-balance if account has not yet been activated', async t => {
+  const address = Keypair.random().publicKey()
+  const wallet = {
+    asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
+    readPublic: async () => ({ publicKey: address }),
+    readPrivate: async () => ({ privateKey: '' }),
+    savePublic: async () => {},
+    savePrivate: async () => {},
+    getOptions: async () => ({ testnet: true })
+  }
+
+  const balance = await getWalletBalance(wallet)
+  t.true(BigNumber(0).eq(balance))
 })
