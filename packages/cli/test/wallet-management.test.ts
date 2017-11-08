@@ -55,6 +55,50 @@ test('zaster-add can add a testnet wallet', async t => {
   })
 })
 
+test('zaster-create can create a new wallet', async t => {
+  const keyStorePath = temp.path()
+  const env = { WALLET_STORE_PATH: keyStorePath }
+  const input = 'samplePassword\n'
+
+  const { stdout, stderr } = await shell('zaster create sample-wallet --asset XLM --no-password-repeat', { env, input })
+  t.is(stderr, '')
+
+  const keyStore = await loadStore(keyStorePath)
+  t.deepEqual(keyStore.getWalletIDs(), ['sample-wallet'])
+
+  const privateData = await keyStore.readWallet('sample-wallet', 'samplePassword')
+  const publicData = await keyStore.readWalletPublicData('sample-wallet')
+
+  t.is(publicData.asset, 'XLM')
+  t.is(publicData.testnet, false)
+  t.regex(publicData.platform.publicKey, /^G[A-Z0-9]+$/)
+  t.regex(privateData.platform.privateKey, /^S[A-Z0-9]+$/)
+
+  t.snapshot(stripAnsi(stdout).trim())
+})
+
+test('zaster-create can create a new testnet wallet', async t => {
+  const keyStorePath = temp.path()
+  const env = { WALLET_STORE_PATH: keyStorePath }
+  const input = 'samplePassword\n'
+
+  const { stdout, stderr } = await shell('zaster create sample-wallet --asset XLM --testnet --no-password-repeat', { env, input })
+  t.is(stderr, '')
+
+  const keyStore = await loadStore(keyStorePath)
+  t.deepEqual(keyStore.getWalletIDs(), ['sample-wallet'])
+
+  const privateData = await keyStore.readWallet('sample-wallet', 'samplePassword')
+  const publicData = await keyStore.readWalletPublicData('sample-wallet')
+
+  t.is(publicData.asset, 'XLM')
+  t.is(publicData.testnet, true)
+  t.regex(publicData.platform.publicKey, /^G[A-Z0-9]+$/)
+  t.regex(privateData.platform.privateKey, /^S[A-Z0-9]+$/)
+
+  t.snapshot(stripAnsi(stdout).trim())
+})
+
 test('zaster-ls can list a previously added wallet', async t => {
   const keyStorePath = temp.path()
   const env = { WALLET_STORE_PATH: keyStorePath }
