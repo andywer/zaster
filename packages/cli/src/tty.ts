@@ -1,7 +1,7 @@
 import input from 'input'
 import { newInputError } from './errors'
 
-export async function readPassword ({ repeat = true }) {
+export async function readPassword ({ repeat = false } = {}) {
   const password = await input.password(`Password: `)
 
   if (repeat) {

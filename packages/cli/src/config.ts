@@ -5,11 +5,11 @@ import * as stellar from '@wallet/stellar'
 const defaultKeyStorePath = path.join(homedir(), '.wallets')
 const keyStorePath = process.env.WALLET_STORE_PATH || defaultKeyStorePath
 
-const implementations = [
+const platforms = [
   stellar
 ]
 
 export {
-  implementations,
+  platforms,
   keyStorePath
 }
