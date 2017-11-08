@@ -125,3 +125,16 @@ test('zaster-rm can remove a previously added wallet', async t => {
 
   t.snapshot(stripAnsi(stdout).trim())
 })
+
+test('zaster-backup can print a wallet\'s private key', async t => {
+  const keyStorePath = temp.path()
+  const env = { WALLET_STORE_PATH: keyStorePath }
+  const input = 'samplePassword\nsamplePassword\n'
+
+  await shell('zaster add sample-wallet --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --testnet --no-password-repeat', { env, input })
+  const { stdout, stderr } = await shell('zaster backup sample-wallet', { env, input: 'samplePassword\n' })
+  t.is(stderr, '')
+
+  t.is(stdout.trim().replace(/^[\S\s]+\s([A-Z0-9]+)$/, '$1'), 'SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC')
+  t.snapshot(stripAnsi(stdout).trim())
+})
