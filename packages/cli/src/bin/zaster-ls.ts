@@ -1,5 +1,5 @@
 import program = require('commander')
-import { padEnd } from 'lodash'
+import { padEnd, sortBy } from 'lodash'
 import { handleCLIError } from '../errors'
 import { grey } from '../formats'
 import { initSDK } from '../sdk'
@@ -10,15 +10,16 @@ program
   .name('zaster')
   .usage('ls')
   .description('List wallets.')
+  .option('--raw', 'Unformatted output, just the wallet IDs.')
   .version(pkg.version)
   .parse(process.argv)
 
-printWallets()
+printWallets(program)
   .catch(handleCLIError)
 
-async function printWallets () {
+async function printWallets ({ args, raw = false }) {
   const sdk = await initSDK()
-  const walletIDs = sdk.wallets.getWalletIDs()
+  const walletIDs = sortBy(sdk.wallets.getWalletIDs())
 
   if (walletIDs.length === 0) {
     console.log('(No wallets)')
@@ -26,9 +27,14 @@ async function printWallets () {
     for (const walletID of walletIDs) {
       const wallet = await sdk.wallets.getWallet(walletID)
       const metadata = await getWalletMetadata(wallet)
-      const formattedWalletID = padEnd(walletID, 16)
-      const formattedMetadata = grey(formatMetadata(metadata))
-      console.log(`  ${formattedWalletID}\t${formattedMetadata}`)
+
+      if (raw) {
+        console.log(`  ${walletID}`)
+      } else {
+        const formattedWalletID = padEnd(walletID, 16)
+        const formattedMetadata = grey(formatMetadata(metadata))
+        console.log(`  ${formattedWalletID}\t${formattedMetadata}`)
+      }
     }
   }
 }
