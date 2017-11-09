@@ -111,6 +111,19 @@ test('zaster-ls can list a previously added wallet', async t => {
   t.snapshot(stripAnsi(stdout).trim())
 })
 
+test('zaster-ls sorts wallets', async t => {
+  const keyStorePath = temp.path()
+  const env = { WALLET_STORE_PATH: keyStorePath }
+  const input = 'samplePassword\nsamplePassword\n'
+
+  await shell('zaster add xyz --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --no-password-repeat', { env, input })
+  await shell('zaster add abc --asset XLM --private-key SBM2CIOD7RLPMOXMZ7E57J4O6DEH7RWORM7CWK5PPYBT5NRBDDAGPZUC --no-password-repeat', { env, input })
+  const { stdout, stderr } = await shell('zaster ls --raw', { env })
+
+  t.is(stderr, '')
+  t.deepEqual(stdout.trim().split('\n').map(line => line.trim()), [ 'abc', 'xyz' ])
+})
+
 test('zaster-rm can remove a previously added wallet', async t => {
   const keyStorePath = temp.path()
   const env = { WALLET_STORE_PATH: keyStorePath }
