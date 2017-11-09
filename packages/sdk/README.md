@@ -8,10 +8,22 @@ Digital payment for the masses. Manage crypto funds with ease.
 
 Initialize an SDK instance.
 
-`KeyStore` denotes a key store as returned by the loader functions of the `key-store` package.
+`KeyStore` denotes a key store as returned by the loader functions of the [key-store](https://github.com/andywer/key-store) package. `platforms` is supposed to be an array of platform implementations, like [stellar](../packages/stellar).
 
-```typescript
+```ts
 type requestPassword = (wallet: Wallet) => Promise<string>
+```
+
+Example:
+
+```js
+import { loadSDK } from '@wallet/sdk'
+import stellar from '@wallet/stellar'
+import { loadStore } from 'key-store'
+
+const keyStore = await loadStore('~/.wallets')
+const requestPassword = async () => 'hardcoded password'
+const sdk = await loadSDK(keyStore, [ stellar ], { requestPassword })
 ```
 
 ### `SdkInstance.assets: Asset[]`
