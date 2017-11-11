@@ -9,7 +9,7 @@ export declare type PrivateWalletData = {
 export declare type StellarWallet = Wallet<PrivateWalletData, PublicWalletData>;
 export declare function getAssets(): Asset[];
 export declare function createPrivateKey(): Promise<any>;
-export declare function initWallet(wallet: StellarWallet, privateKey: string, options?: InitWalletOptions): Promise<void>;
+export declare function prepareNewWallet(wallet: StellarWallet, privateKey: string, options?: InitWalletOptions): Promise<void>;
 export declare type AddressBalanceOptions = {
     testnet?: boolean;
 };

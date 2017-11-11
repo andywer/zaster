@@ -116,7 +116,7 @@ function createWalletsAPI (
       const platform = getPlatform(asset)
       const requestPassword = async () => password
       const wallet = createWalletInstance({ keyStore, requestPassword }, id, asset)
-      await platform.initWallet(wallet, privateKey, options)
+      await platform.prepareNewWallet(wallet, privateKey, options)
       await keyStore.saveWalletPublicData(id, {
         ...(await keyStore.readWalletPublicData(id)),
         asset: asset.id,
