@@ -31,6 +31,16 @@ Asynchronously retrieves the balance of a wallet. The value is always denominate
 
 Asynchronously returns an address to receive payments for the given wallet.
 
+### `prepareNewWallet(wallet: Wallet, privateKey: string, options?: object): Promise<void>`
+
+Asynchronously initialize a newly created wallet. Feel free to do whatever magic needs to be done on this platform.
+
+```typescript
+type options = {
+  testnet?: boolean
+}
+```
+
 
 ## Types
 

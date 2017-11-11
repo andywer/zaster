@@ -6,7 +6,7 @@ export type Platform = {
   getAddressBalance (address: string, options?: AddressBalanceOptions): Promise<BigNumber>,
   getWalletBalance (wallet: Wallet): Promise<BigNumber>,
   getWalletAddress (wallet: Wallet): Promise<string>,
-  initWallet (wallet: Wallet, privateKey: string, options?: InitWalletOptions): Promise<void>
+  prepareNewWallet (wallet: Wallet, privateKey: string, options?: InitWalletOptions): Promise<void>
 }
 
 export type AddressBalanceOptions = { testnet?: boolean }

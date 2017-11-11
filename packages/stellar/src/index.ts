@@ -27,7 +27,7 @@ export async function createPrivateKey () {
   return Keypair.random().secret()
 }
 
-export async function initWallet (wallet: StellarWallet, privateKey: string, options: InitWalletOptions = {}) {
+export async function prepareNewWallet (wallet: StellarWallet, privateKey: string, options: InitWalletOptions = {}) {
   const keypair = Keypair.fromSecret(privateKey)
 
   await wallet.savePrivate({ privateKey })
