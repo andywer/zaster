@@ -1,3 +1,4 @@
+import { Big as BigNumber } from 'big.js'
 import { Network, Server } from 'stellar-sdk'
 
 let pubnetHorizon: Server = null
@@ -23,4 +24,12 @@ export function useNetwork ({ testnet }: { testnet: boolean }) {
   } else {
     Network.usePublicNetwork()
   }
+}
+
+export async function retrieveAccountData (address: string, options: { testnet?: boolean } = {}): Promise<BigNumber> {
+  const { testnet = false } = options
+  const horizon = getHorizonServer({ testnet })
+
+  useNetwork({ testnet })
+  return horizon.loadAccount(address)
 }
