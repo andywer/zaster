@@ -1,5 +1,6 @@
 import { Big as BigNumber } from 'big.js';
-import { Asset, Platform, Wallet, AddressBalanceOptions } from '@wallet/platform-api';
+import { Asset, Operation, Platform, Transaction, Wallet, AddressBalanceOptions, InitWalletOptions } from '@wallet/platform-api';
+export { OperationType } from '@wallet/platform-api';
 export declare type KeyStore = {
     getWalletIDs(): string[];
     readWallet(walletID: string, password: string): Promise<any>;
@@ -14,10 +15,17 @@ export declare type SDK = {
     readonly assets: Asset[];
     getAsset(assetID: string): Asset | null;
 };
+export declare type SDKTransaction = {
+    asset: Asset;
+    body: Transaction;
+    walletOptions: InitWalletOptions;
+};
 export declare type LedgerAPI = {
     getAddressBalance(asset: Asset, address: string, options?: AddressBalanceOptions): Promise<BigNumber>;
     getWalletBalance(walletID: string): Promise<BigNumber>;
     getWalletAddress(walletID: string): Promise<string>;
+    createTransaction(walletID: string, operations: Operation[], options?: object): Promise<SDKTransaction>;
+    sendTransaction(transaction: SDKTransaction): Promise<SDKTransaction>;
 };
 export declare type WalletsAPI = {
     addWallet(id: string, asset: Asset, privateKey: string, password: string, options?: object): Promise<Wallet>;
