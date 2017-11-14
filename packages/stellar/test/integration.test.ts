@@ -2,9 +2,15 @@ import test from 'ava'
 import { Big as BigNumber } from 'big.js'
 import { Keypair } from 'stellar-sdk'
 import got = require('got')
-import { createPrivateKey, getAssets, getAddressBalance, getWalletBalance } from '../src'
+import { OperationType } from '@wallet/platform-api'
+import { createPrivateKey, createTransaction, getAssets, getAddressBalance, getWalletBalance, sendTransaction } from '../src'
 
 const getAccountBalance = (restAccountData: any): string => restAccountData.balances.find(balance => balance.asset_type === 'native').balance
+
+const getBalanceFromHorizon = async (url: string): Promise<BigNumber> => {
+  const restApiResponse: any = await got(url, { json: true })
+  return BigNumber(await getAccountBalance(restApiResponse.body))
+}
 
 test('getAssets() returns asset', t => {
   const assets = getAssets()
@@ -21,25 +27,21 @@ test('createPrivateKey() can create a private key', async t => {
 test('getAddressBalance() can retrieve a testnet balance', async t => {
   const address = 'GBPBFWVBADSESGADWEGC7SGTHE3535FWK4BS6UW3WMHX26PHGIH5NF4W'
 
-  const restApiResponse: any = await got(`https://horizon-testnet.stellar.org/accounts/${address}`, { json: true })
-  const restApiBalance = getAccountBalance(restApiResponse.body)
-
+  const restApiBalance = await getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${address}`)
   const implementationBalance = await getAddressBalance(address, { testnet: true })
 
   t.true(implementationBalance.gt(BigNumber(20)))
-  t.is(implementationBalance.toFixed(7), restApiBalance)
+  t.is(implementationBalance.toFixed(7), restApiBalance.toString())
 })
 
 test('getAddressBalance() can retrieve a mainnet balance', async t => {
   const address = 'GDOOMATUOJPLIQMQ4WWXBEWR5UMKJW65CFKJJW3LV7XZYIEQHZPDQCBI'
 
-  const restApiResponse: any = await got(`https://horizon.stellar.org/accounts/${address}`, { json: true })
-  const restApiBalance = getAccountBalance(restApiResponse.body)
-
+  const restApiBalance = await getBalanceFromHorizon(`https://horizon.stellar.org/accounts/${address}`)
   const implementationBalance = await getAddressBalance(address)
 
   t.true(implementationBalance.gt(BigNumber(20)))
-  t.is(implementationBalance.toFixed(7), restApiBalance)
+  t.is(implementationBalance.toFixed(7), restApiBalance.toString())
 })
 
 test('getWalletBalance() can retrieve a testnet balance', async t => {
@@ -53,13 +55,11 @@ test('getWalletBalance() can retrieve a testnet balance', async t => {
     getOptions: async () => ({ testnet: true })
   }
 
-  const restApiResponse: any = await got(`https://horizon-testnet.stellar.org/accounts/${address}`, { json: true })
-  const restApiBalance = getAccountBalance(restApiResponse.body)
-
+  const restApiBalance = await getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${address}`)
   const implementationBalance = await getWalletBalance(wallet)
 
   t.true(implementationBalance.gt(BigNumber(20)))
-  t.is(implementationBalance.toFixed(7), restApiBalance)
+  t.is(implementationBalance.toFixed(7), restApiBalance.toString())
 })
 
 test('getWalletBalance() can retrieve a mainnet balance', async t => {
@@ -73,13 +73,11 @@ test('getWalletBalance() can retrieve a mainnet balance', async t => {
     getOptions: async () => ({ testnet: false })
   }
 
-  const restApiResponse: any = await got(`https://horizon.stellar.org/accounts/${address}`, { json: true })
-  const restApiBalance = getAccountBalance(restApiResponse.body)
-
+  const restApiBalance = await getBalanceFromHorizon(`https://horizon.stellar.org/accounts/${address}`)
   const implementationBalance = await getWalletBalance(wallet)
 
   t.true(implementationBalance.gt(BigNumber(20)))
-  t.is(implementationBalance.toFixed(7), restApiBalance)
+  t.is(implementationBalance.toFixed(7), restApiBalance.toString())
 })
 
 test('getWalletBalance() returns a zero-balance if account has not yet been activated', async t => {
@@ -95,4 +93,37 @@ test('getWalletBalance() returns a zero-balance if account has not yet been acti
 
   const balance = await getWalletBalance(wallet)
   t.true(BigNumber(0).eq(balance))
+})
+
+test('createTransaction() can create a tx that can be sent by sendTransaction()', async t => {
+  const keypair = Keypair.fromSecret('SAOSYEJDOSY6SO75MVG3JBJA3VQICOAYGM3A7KR6Y6TBEN44MPJVDKRR')
+  const destination = 'GBPBFWVBADSESGADWEGC7SGTHE3535FWK4BS6UW3WMHX26PHGIH5NF4W'
+
+  const wallet = {
+    asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
+    readPublic: async () => ({ publicKey: keypair.publicKey() }),
+    readPrivate: async () => ({ privateKey: keypair.secret() }),
+    savePublic: async () => {},
+    savePrivate: async () => {},
+    getOptions: async () => ({ testnet: true })
+  }
+
+  const [ initialSourceBalance, initialDestinationBalance ] = await Promise.all([
+    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${keypair.publicKey()}`),
+    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${destination}`)
+  ])
+
+  const transaction = await createTransaction(wallet, [
+    { type: OperationType.Payment, amount: BigNumber(10), destination }
+  ])
+  const sentTransaction = await sendTransaction(transaction, { testnet: true })
+
+  const [ resultingSourceBalance, resultingDestinationBalance ] = await Promise.all([
+    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${keypair.publicKey()}`),
+    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${destination}`)
+  ])
+
+  t.is(resultingSourceBalance.minus(initialSourceBalance).toString(), BigNumber(-10 -100e-7).toString())
+  t.is(resultingDestinationBalance.minus(initialDestinationBalance).toString(), BigNumber(10).toString())
+  t.deepEqual(transaction, sentTransaction)
 })

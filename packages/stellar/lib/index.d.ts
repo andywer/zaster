@@ -1,5 +1,6 @@
 import { Big as BigNumber } from 'big.js';
 import { Asset, Wallet, InitWalletOptions } from '@wallet/platform-api';
+export { createTransaction, sendTransaction } from './transactions';
 export declare type PublicWalletData = {
     publicKey: string;
 };

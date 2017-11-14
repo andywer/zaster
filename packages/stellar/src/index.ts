@@ -2,6 +2,7 @@ import { Big as BigNumber } from 'big.js'
 import { Keypair } from 'stellar-sdk'
 import { Asset, Wallet, InitWalletOptions } from '@wallet/platform-api'
 import { retrieveAccountData } from './horizon'
+export { createTransaction, sendTransaction } from './transactions'
 
 export type PublicWalletData = {
   publicKey: string
