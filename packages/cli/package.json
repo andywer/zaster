@@ -21,6 +21,7 @@
   "dependencies": {
     "@wallet/sdk": "^0.1.0",
     "@wallet/stellar": "^0.1.0",
+    "big.js": "^5.0.3",
     "center-align": "^1.0.1",
     "chalk": "^2.1.0",
     "commander": "^2.11.0",

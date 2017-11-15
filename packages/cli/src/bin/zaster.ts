@@ -13,6 +13,7 @@ program
   .command('backup', 'Backup a wallet\'s private key.')
   .command('address', 'Show a wallet\'s address to receive payments.')
   .command('show', 'Show a balance, transaction, ...')
+  .command('send-transaction', 'Create and send a transaction.')
   .version(pkg.version)
   .description(pkg.description)
   .parse(process.argv)
