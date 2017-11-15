@@ -42,6 +42,14 @@ Asynchronously returns the balance of a given address in a given ledger.
 
 Asynchronously returns the balance of a wallet.
 
+### `SdkInstance.ledger.createTransaction(walletID: string, operations: Operation[]): Promise<Transaction>`
+
+Asynchronously create a transaction.
+
+### `SdkInstance.ledger.sendTransaction(transaction: Transaction): Promise<Transaction>`
+
+Dispatch transaction to the network.
+
 ### `SdkInstance.wallets.getWalletIDs(): string[]`
 
 Returns the IDs of all wallets.
@@ -78,6 +86,8 @@ Removes the wallet matching the `id`.
 ## Types
 
 ### Asset
+### Operation
+### Transaction
 ### Wallet
 
 See the [Platform API readme](../platform-api-spec/README.md#types).

@@ -1,6 +1,8 @@
 import { Big as BigNumber } from 'big.js'
 import { flatMap } from 'lodash'
-import { Asset, Platform, Wallet, AddressBalanceOptions, InitWalletOptions } from '@wallet/platform-api'
+import { Asset, Operation, Platform, Transaction, Wallet, AddressBalanceOptions, InitWalletOptions } from '@wallet/platform-api'
+
+export { OperationType } from '@wallet/platform-api'
 
 export type KeyStore = {
   getWalletIDs (): string[],
@@ -18,10 +20,18 @@ export type SDK = {
   getAsset (assetID: string): Asset | null
 }
 
+export type SDKTransaction = {
+  asset: Asset,
+  body: Transaction,
+  walletOptions: InitWalletOptions
+}
+
 export type LedgerAPI = {
   getAddressBalance (asset: Asset, address: string, options?: AddressBalanceOptions): Promise<BigNumber>,
   getWalletBalance (walletID: string): Promise<BigNumber>,
-  getWalletAddress (walletID: string): Promise<string>
+  getWalletAddress (walletID: string): Promise<string>,
+  createTransaction (walletID: string, operations: Operation[], options?: object): Promise<SDKTransaction>,
+  sendTransaction (transaction: SDKTransaction): Promise<SDKTransaction>
 }
 
 export type WalletsAPI = {
@@ -99,6 +109,20 @@ function createLedgerAPI (
     async getWalletAddress (walletID: string): Promise<string> {
       const { platform, wallet } = await openWalletByID(walletID)
       return platform.getWalletAddress(wallet)
+    },
+    async createTransaction (walletID: string, operations: Operation[], options?: object): Promise<SDKTransaction> {
+      const { platform, wallet } = await openWalletByID(walletID)
+      const body = await platform.createTransaction(wallet, operations, options)
+      return {
+        body,
+        asset: wallet.asset,
+        walletOptions: await wallet.getOptions()
+      }
+    },
+    async sendTransaction (transaction: SDKTransaction): Promise<SDKTransaction> {
+      const platform = getPlatform(transaction.asset)
+      await platform.sendTransaction(transaction.body, transaction.walletOptions)
+      return transaction
     }
   }
 }

@@ -41,6 +41,21 @@ type options = {
 }
 ```
 
+### `createTransaction(wallet: Wallet, operations: Operation[], options?: object): Promise<Transaction>`
+
+Asynchronously creates a transaction.
+
+### `sendTransaction(transaction: Transaction, options?: object): Promise<Transaction>`
+
+Dispatch transaction to network.
+
+```typescript
+type options = {
+  testnet?: boolean
+}
+```
+
+
 
 ## Types
 

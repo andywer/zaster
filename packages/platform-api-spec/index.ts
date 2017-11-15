@@ -6,7 +6,9 @@ export type Platform = {
   getAddressBalance (address: string, options?: AddressBalanceOptions): Promise<BigNumber>,
   getWalletBalance (wallet: Wallet): Promise<BigNumber>,
   getWalletAddress (wallet: Wallet): Promise<string>,
-  prepareNewWallet (wallet: Wallet, privateKey: string, options?: InitWalletOptions): Promise<void>
+  prepareNewWallet (wallet: Wallet, privateKey: string, options?: InitWalletOptions): Promise<void>,
+  createTransaction (wallet: Wallet, operations: Operation[], options?: object): Promise<Transaction>,
+  sendTransaction (transaction: Transaction, options: InitWalletOptions): Promise<Transaction>
 }
 
 export type AddressBalanceOptions = { testnet?: boolean }
@@ -26,4 +28,21 @@ export type Wallet<WalletPrivateData = any, WalletPublicData = any> = {
   readPublic (): Promise<WalletPublicData>,
   savePublic (data: WalletPublicData): Promise<void>,
   getOptions (): Promise<InitWalletOptions>
+}
+
+// Transaction objects are treated opaquely, the platform implementation can return whatever is suitable
+export type Transaction = object|string
+
+export type Operation = PaymentOperation | {
+  type: OperationType
+}
+
+export type PaymentOperation = {
+  type: OperationType.Payment,
+  amount: BigNumber,
+  destination: string
+}
+
+export enum OperationType {
+  Payment = 'PAYMENT'
 }

@@ -1,7 +1,8 @@
 import { Big as BigNumber } from 'big.js'
 import { Keypair } from 'stellar-sdk'
 import { Asset, Wallet, InitWalletOptions } from '@wallet/platform-api'
-import { getHorizonServer, useNetwork } from './horizon'
+import { retrieveAccountData } from './horizon'
+export { createTransaction, sendTransaction } from './transactions'
 
 export type PublicWalletData = {
   publicKey: string
@@ -69,14 +70,6 @@ export async function getWalletAddress (wallet: StellarWallet): Promise<string> 
 function getBalance (accountData): BigNumber {
   const balanceObject = accountData.balances.find((balance: any) => balance.asset_type === 'native')
   return balanceObject ? BigNumber(balanceObject.balance) : BigNumber(0)
-}
-
-async function retrieveAccountData (address: string, options: AddressBalanceOptions = {}): Promise<BigNumber> {
-  const { testnet = false } = options
-  const horizon = getHorizonServer({ testnet })
-
-  useNetwork({ testnet })
-  return horizon.loadAccount(address)
 }
 
 function wrapBalanceError (publicKey: string, stellarError): Error {

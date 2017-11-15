@@ -24,7 +24,7 @@ $ zaster show transaction <walletID>:<txID>
 $ zaster show transaction <asset>:<txID>
 
 $ zaster address <walletID>
-$ zaster pay <walletID> -d|--destination <address> -a|--amount <amount> -m|--memo <description>
+$ zaster send-transaction <walletID> --payment '<amount> to <address|walletID>' -m|--memo <description>
 
 $ zaster log <walletID> [--from-date <date>] [--to-date <date>] [--limit <maxCount>]
 
