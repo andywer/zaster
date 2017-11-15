@@ -31,7 +31,7 @@ test('getAddressBalance() can retrieve a testnet balance', async t => {
   const implementationBalance = await getAddressBalance(address, { testnet: true })
 
   t.true(implementationBalance.gt(BigNumber(20)))
-  t.is(implementationBalance.toFixed(7), restApiBalance.toString())
+  t.is(implementationBalance.toString(), restApiBalance.toString())
 })
 
 test('getAddressBalance() can retrieve a mainnet balance', async t => {
@@ -41,7 +41,7 @@ test('getAddressBalance() can retrieve a mainnet balance', async t => {
   const implementationBalance = await getAddressBalance(address)
 
   t.true(implementationBalance.gt(BigNumber(20)))
-  t.is(implementationBalance.toFixed(7), restApiBalance.toString())
+  t.is(implementationBalance.toString(), restApiBalance.toString())
 })
 
 test('getWalletBalance() can retrieve a testnet balance', async t => {
@@ -59,7 +59,7 @@ test('getWalletBalance() can retrieve a testnet balance', async t => {
   const implementationBalance = await getWalletBalance(wallet)
 
   t.true(implementationBalance.gt(BigNumber(20)))
-  t.is(implementationBalance.toFixed(7), restApiBalance.toString())
+  t.is(implementationBalance.toString(), restApiBalance.toString())
 })
 
 test('getWalletBalance() can retrieve a mainnet balance', async t => {
@@ -77,7 +77,7 @@ test('getWalletBalance() can retrieve a mainnet balance', async t => {
   const implementationBalance = await getWalletBalance(wallet)
 
   t.true(implementationBalance.gt(BigNumber(20)))
-  t.is(implementationBalance.toFixed(7), restApiBalance.toString())
+  t.is(implementationBalance.toString(), restApiBalance.toString())
 })
 
 test('getWalletBalance() returns a zero-balance if account has not yet been activated', async t => {
