@@ -36,6 +36,26 @@ Check out the [**CLI tool**](./packages/cli) to make blockchain transactions and
 Building your own product? Check out [**the SDK**](./packages/sdk) to create advanced applications and services using a blockchain of your choice.
 
 
+## Road Map
+
+### Supported Platforms
+
+- [x] [Stellar](https://stellar.org/)
+- [ ] Bitcoin
+- [ ] Ethereum
+- [ ] IOTA
+
+### Supported CLI functionality
+
+- [x] Create and manage wallets
+- [x] Get addresses and balances
+- [x] Send payment transactions
+- [ ] Show transaction history
+- [ ] Show fiat equivalents
+- [ ] Advanced transaction features, like memos
+- [ ] Multi signature wallets
+
+
 ## Architecture
 
 ```
