@@ -1,6 +1,8 @@
 import test from 'ava'
 import { Big as BigNumber } from 'big.js'
+import { Keypair } from 'stellar-sdk'
 import * as temp from 'temp'
+import retry = require('async-retry')
 import got = require('got')
 import shell from './helpers/shell'
 
@@ -14,27 +16,39 @@ const getBalanceFromHorizon = async (url: string): Promise<BigNumber> => {
   return BigNumber(getAccountBalance(response.body))
 }
 
+const topUpByFriendbot = async (address: string): Promise<any> => {
+  return retry(
+    async () => got(`https://horizon-testnet.stellar.org/friendbot?addr=${address}`),
+    { minTimeout: 250, retries: 5 }
+  )
+}
+
 test('zaster-send-transaction can make a payment', async t => {
   const keyStorePath = temp.path()
   const env = { WALLET_STORE_PATH: keyStorePath }
 
-  const sourceAddress = 'GDA5LHH5WEUSCA4GKPL6VP3PPM7X5TGASACBQ4JJNEYSJQL4N3MMVSPF'
-  const destination = 'GBPBFWVBADSESGADWEGC7SGTHE3535FWK4BS6UW3WMHX26PHGIH5NF4W'
+  const sourceKeypair = Keypair.random()
+  const destinationKeypair = Keypair.random()
+
   const passwordInput = 'samplePassword\nsamplePassword\n'
 
-  await shell('zaster add sample-wallet --asset XLM --private-key SAOSYEJDOSY6SO75MVG3JBJA3VQICOAYGM3A7KR6Y6TBEN44MPJVDKRR --no-password-repeat --testnet', { env, input: passwordInput.repeat(2) })
+  await Promise.all([
+    topUpByFriendbot(sourceKeypair.publicKey()),
+    topUpByFriendbot(destinationKeypair.publicKey())
+  ])
+  await shell(`zaster add sample-wallet --asset XLM --private-key ${sourceKeypair.secret()} --no-password-repeat --testnet`, { env, input: passwordInput.repeat(2) })
 
   const [ initialSourceBalance, initialDestinationBalance ] = await Promise.all([
-    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${sourceAddress}`),
-    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${destination}`)
+    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${sourceKeypair.publicKey()}`),
+    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${destinationKeypair.publicKey()}`)
   ])
 
-  const { stdout, stderr } = await shell(`zaster send-transaction sample-wallet --payment '10.0 to ${destination}'`, { env, input: passwordInput })
+  const { stdout, stderr } = await shell(`zaster send-transaction sample-wallet --payment '10.0 to ${destinationKeypair.publicKey()}'`, { env, input: passwordInput })
   t.is(stderr, '')
 
   const [ resultingSourceBalance, resultingDestinationBalance ] = await Promise.all([
-    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${sourceAddress}`),
-    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${destination}`)
+    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${sourceKeypair.publicKey()}`),
+    getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${destinationKeypair.publicKey()}`)
   ])
 
   t.is(resultingSourceBalance.minus(initialSourceBalance).toString(), BigNumber(-10 -100e-7).toString())

@@ -37,9 +37,11 @@
     "@types/execa": "^0.7.2",
     "@types/lodash": "^4.14.82",
     "@types/node": "^8.0.47",
+    "async-retry": "^1.1.4",
     "execa": "^0.8.0",
     "got": "^7.1.0",
     "key-store": "^0.1.0",
+    "stellar-sdk": "^0.7.4",
     "strip-ansi": "^4.0.0",
     "temp": "^0.8.3"
   }
