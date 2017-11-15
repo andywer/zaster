@@ -97,7 +97,7 @@ test('getWalletBalance() returns a zero-balance if account has not yet been acti
 
 test('createTransaction() can create a tx that can be sent by sendTransaction()', async t => {
   const keypair = Keypair.fromSecret('SAOSYEJDOSY6SO75MVG3JBJA3VQICOAYGM3A7KR6Y6TBEN44MPJVDKRR')
-  const destination = 'GBPBFWVBADSESGADWEGC7SGTHE3535FWK4BS6UW3WMHX26PHGIH5NF4W'
+  const destination = 'GAJT6T3FDVO3QXIRZJWXBYB7DYXLXMUFNW3AXDS52GAQKNZ23UQAOJRW'
 
   const wallet = {
     asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
