@@ -2,7 +2,13 @@
 [![Build Status](https://travis-ci.org/andywer/zaster.svg?branch=master)](https://travis-ci.org/andywer/key-store)
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Headless multi-blockchain wallet. Build your own blockchain product using the [SDK](./packages/sdk) or use the [command line tool](./packages/cli) to manage your crypto funds.
+The headless multi-blockchain wallet.
+
+* 💸 Manage your crypto funds
+* 🤖 Automate payments using the [command line tool](./packages/cli)
+* 🛠 Build your own blockchain product using the [SDK](./packages/sdk)
+* 📲 Easy machine-to-machine payments
+* 🔐 No lock-in: Will support Bitcoin, Ethereum, Stellar, ...
 
 <h4 align="center">
   ⚠️ <b>Under construction</b> ⚠️
@@ -54,6 +60,7 @@ Building your own product? Check out [**the SDK**](./packages/sdk) to create adv
 - [ ] Show fiat equivalents
 - [ ] Advanced transaction features, like memos
 - [ ] Multi signature wallets
+- [ ] Send payments to email addresses
 
 
 ## Architecture
