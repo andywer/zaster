@@ -48,6 +48,7 @@ test('getWalletBalance() can retrieve a testnet balance', async t => {
   const address = 'GBPBFWVBADSESGADWEGC7SGTHE3535FWK4BS6UW3WMHX26PHGIH5NF4W'
   const wallet = {
     asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
+    id: 'test-wallet',
     readPublic: async () => ({ publicKey: address }),
     readPrivate: async () => ({ privateKey: '' }),
     savePublic: async () => {},
@@ -66,6 +67,7 @@ test('getWalletBalance() can retrieve a mainnet balance', async t => {
   const address = 'GDOOMATUOJPLIQMQ4WWXBEWR5UMKJW65CFKJJW3LV7XZYIEQHZPDQCBI'
   const wallet = {
     asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
+    id: 'test-wallet',
     readPublic: async () => ({ publicKey: address }),
     readPrivate: async () => ({ privateKey: '' }),
     savePublic: async () => {},
@@ -84,6 +86,7 @@ test('getWalletBalance() returns a zero-balance if account has not yet been acti
   const address = Keypair.random().publicKey()
   const wallet = {
     asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
+    id: 'test-wallet',
     readPublic: async () => ({ publicKey: address }),
     readPrivate: async () => ({ privateKey: '' }),
     savePublic: async () => {},
@@ -101,6 +104,7 @@ test('createTransaction() can create a tx that can be sent by sendTransaction()'
 
   const wallet = {
     asset: { id: 'XLM', aliases: [], name: 'Stellar lumens' },
+    id: 'test-wallet',
     readPublic: async () => ({ publicKey: keypair.publicKey() }),
     readPrivate: async () => ({ privateKey: keypair.secret() }),
     savePublic: async () => {},

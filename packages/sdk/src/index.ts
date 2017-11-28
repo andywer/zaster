@@ -4,6 +4,8 @@ import { Asset, Operation, Platform, Transaction, Wallet, AddressBalanceOptions,
 
 export { OperationType } from '@wallet/platform-api'
 
+export type Wallet = Wallet
+
 export type KeyStore = {
   getWalletIDs (): string[],
   readWallet (walletID: string, password: string): Promise<any>,
@@ -172,7 +174,12 @@ function createWalletInstance (
   const walletInitialized = () => keyStore.getWalletIDs().includes(walletID)
 
   const wallet = {
-    asset,
+    get asset () {
+      return asset
+    },
+    get id () {
+      return walletID
+    },
     async getOptions (): Promise<InitWalletOptions> {
       const publicData = await keyStore.readWalletPublicData(walletID)
       const { testnet = false } = publicData
