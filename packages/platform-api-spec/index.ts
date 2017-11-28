@@ -23,6 +23,7 @@ export type Asset = {
 // Internal wallet as used by platforms
 export type Wallet<WalletPrivateData = any, WalletPublicData = any> = {
   readonly asset: Asset,
+  readonly id: string,
   readPrivate (): Promise<WalletPrivateData>,
   savePrivate (data: WalletPrivateData): Promise<void>,
   readPublic (): Promise<WalletPublicData>,
