@@ -45,6 +45,10 @@ type options = {
 
 Asynchronously creates a transaction.
 
+### `signTransaction(wallet: Wallet, transaction: Transaction): Promise<Transaction>`
+
+Asynchronously sign a transaction with the wallet's private key.
+
 ### `sendTransaction(transaction: Transaction, options?: object): Promise<Transaction>`
 
 Dispatch transaction to network.

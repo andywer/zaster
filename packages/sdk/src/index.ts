@@ -33,6 +33,7 @@ export type LedgerAPI = {
   getWalletBalance (walletID: string): Promise<BigNumber>,
   getWalletAddress (walletID: string): Promise<string>,
   createTransaction (walletID: string, operations: Operation[], options?: object): Promise<SDKTransaction>,
+  signTransaction (walletID: string, transaction: SDKTransaction): Promise<SDKTransaction>,
   sendTransaction (transaction: SDKTransaction): Promise<SDKTransaction>
 }
 
@@ -119,6 +120,14 @@ function createLedgerAPI (
         body,
         asset: wallet.asset,
         walletOptions: await wallet.getOptions()
+      }
+    },
+    async signTransaction (walletID: string, transaction: SDKTransaction): Promise<SDKTransaction> {
+      const { platform, wallet } = await openWalletByID(walletID)
+      const signedBody = await platform.signTransaction(wallet, transaction.body)
+      return {
+        ...transaction,
+        body: signedBody
       }
     },
     async sendTransaction (transaction: SDKTransaction): Promise<SDKTransaction> {
