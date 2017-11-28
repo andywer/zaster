@@ -5,6 +5,7 @@ import * as temp from 'temp'
 import retry = require('async-retry')
 import got = require('got')
 import shell from './helpers/shell'
+import stripAnsi = require('strip-ansi')
 
 temp.track()
 
@@ -30,7 +31,7 @@ test('zaster-send-transaction can make a payment', async t => {
   const sourceKeypair = Keypair.random()
   const destinationKeypair = Keypair.random()
 
-  const passwordInput = 'samplePassword\nsamplePassword\n'
+  const passwordInput = 'samplePassword\n'
 
   await Promise.all([
     topUpByFriendbot(sourceKeypair.publicKey()),

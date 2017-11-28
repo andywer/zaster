@@ -3,7 +3,15 @@ import { Big as BigNumber } from 'big.js'
 import { Keypair } from 'stellar-sdk'
 import got = require('got')
 import { OperationType } from '@wallet/platform-api'
-import { createPrivateKey, createTransaction, getAssets, getAddressBalance, getWalletBalance, sendTransaction } from '../src'
+import {
+  createPrivateKey,
+  createTransaction,
+  getAssets,
+  getAddressBalance,
+  getWalletBalance,
+  sendTransaction,
+  signTransaction
+} from '../src'
 
 const getAccountBalance = (restAccountData: any): string => restAccountData.balances.find(balance => balance.asset_type === 'native').balance
 
@@ -98,7 +106,7 @@ test('getWalletBalance() returns a zero-balance if account has not yet been acti
   t.true(BigNumber(0).eq(balance))
 })
 
-test('createTransaction() can create a tx that can be sent by sendTransaction()', async t => {
+test('can create a tx that can be signed and sent', async t => {
   const keypair = Keypair.fromSecret('SAOSYEJDOSY6SO75MVG3JBJA3VQICOAYGM3A7KR6Y6TBEN44MPJVDKRR')
   const destination = 'GAJT6T3FDVO3QXIRZJWXBYB7DYXLXMUFNW3AXDS52GAQKNZ23UQAOJRW'
 
@@ -120,7 +128,8 @@ test('createTransaction() can create a tx that can be sent by sendTransaction()'
   const transaction = await createTransaction(wallet, [
     { type: OperationType.Payment, amount: BigNumber(10), destination }
   ])
-  const sentTransaction = await sendTransaction(transaction, { testnet: true })
+  const signedTransaction = await signTransaction(wallet, transaction)
+  const sentTransaction = await sendTransaction(signedTransaction, { testnet: true })
 
   const [ resultingSourceBalance, resultingDestinationBalance ] = await Promise.all([
     getBalanceFromHorizon(`https://horizon-testnet.stellar.org/accounts/${keypair.publicKey()}`),

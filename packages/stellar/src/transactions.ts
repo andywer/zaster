@@ -1,8 +1,10 @@
 import { Keypair, TransactionBuilder, Asset as StellarAsset, Operation as StellarOperation } from 'stellar-sdk'
-import { Operation, Transaction, Wallet, OperationType, PaymentOperation } from '@wallet/platform-api'
+import { Operation, Wallet, OperationType, PaymentOperation } from '@wallet/platform-api'
 import { getHorizonServer, retrieveAccountData, useNetwork } from './horizon'
 
-export async function createTransaction (wallet: Wallet, operations: Operation[], options = {}): Promise<Transaction> {
+export type StellarTransaction = any
+
+export async function createTransaction (wallet: Wallet, operations: Operation[], options = {}): Promise<StellarTransaction> {
   const { privateKey }: { privateKey: string } = await wallet.readPrivate()
   const { testnet } = await wallet.getOptions()
 
@@ -10,12 +12,19 @@ export async function createTransaction (wallet: Wallet, operations: Operation[]
   const account = await retrieveAccountData(keypair.publicKey(), { testnet })
 
   const transaction = buildTransaction(account, operations)
-  transaction.sign(keypair)
 
   return transaction
 }
 
-export async function sendTransaction (transaction: Transaction, options: { testnet?: boolean } = {}): Promise<Transaction> {
+export async function signTransaction (wallet: Wallet, transaction: StellarTransaction): Promise<StellarTransaction> {
+  const { privateKey }: { privateKey: string } = await wallet.readPrivate()
+  const keypair = Keypair.fromSecret(privateKey)
+
+  transaction.sign(keypair)
+  return transaction
+}
+
+export async function sendTransaction (transaction: StellarTransaction, options: { testnet?: boolean } = {}): Promise<StellarTransaction> {
   const testnet = Boolean(options.testnet)
   const horizon = getHorizonServer({ testnet })
 

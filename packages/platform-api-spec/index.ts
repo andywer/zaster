@@ -8,6 +8,7 @@ export type Platform = {
   getWalletAddress (wallet: Wallet): Promise<string>,
   prepareNewWallet (wallet: Wallet, privateKey: string, options?: InitWalletOptions): Promise<void>,
   createTransaction (wallet: Wallet, operations: Operation[], options?: object): Promise<Transaction>,
+  signTransaction (wallet: Wallet, transaction: Transaction): Promise<Transaction>,
   sendTransaction (transaction: Transaction, options: InitWalletOptions): Promise<Transaction>
 }
 

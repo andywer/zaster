@@ -38,7 +38,9 @@ async function sendTransaction ({ args, payment: payments = [] }) {
   })
 
   const transaction = await sdk.ledger.createTransaction(walletID, operations)
-  await sdk.ledger.sendTransaction(transaction)
+  const signedTransaction = await sdk.ledger.signTransaction(walletID, transaction)
+
+  await sdk.ledger.sendTransaction(signedTransaction)
 
   console.log(green(`Transaction successfully sent.`))
   process.exit(0)
