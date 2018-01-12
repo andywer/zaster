@@ -1,3 +1,4 @@
+import * as util from 'util'
 import { error as formatError, grey } from './formats'
 
 export function newInputError (message: string) {
@@ -16,7 +17,7 @@ export function handleCLIError (error) {
     console.error(formatError(messageLine))
     console.error(grey(stackLines.join('\n')))
   } else {
-    console.error(formatError(error))
+    console.error(formatError(util.inspect(error)))
   }
   process.exit(1)
 }
